@@ -33,7 +33,6 @@ export async function POST(
         courseId: params.courseId,
       },
     });
-    console.log(url.url.split("/").pop());
 
     return NextResponse.json(attachment);
   } catch (error) {
