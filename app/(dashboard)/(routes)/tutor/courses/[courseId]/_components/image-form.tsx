@@ -35,7 +35,7 @@ const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(`/api/courses/${courseId}`, values);
-      toast({ title: "Success", description: "Course successfully updated" });
+      toast({ title: "Success", description: "Course image added" });
       toggleEdit();
       router.refresh();
     } catch (error) {
@@ -46,7 +46,7 @@ const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Course Descrption
+        Course image
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing && <>Cancel</>}
           {!isEditing && !initialData.imageUrl && (

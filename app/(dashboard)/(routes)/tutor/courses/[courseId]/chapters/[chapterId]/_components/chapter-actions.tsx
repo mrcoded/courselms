@@ -33,15 +33,19 @@ const ChapterActions = ({
         await axios.patch(
           `/api/courses/${courseId}/chapters/${chapterId}/unpublish`
         );
+        toast({
+          title: "Success",
+          description: "Chapter Unpublished",
+        });
       } else {
         await axios.patch(
           `/api/courses/${courseId}/chapters/${chapterId}/publish`
         );
+        toast({
+          title: "Success",
+          description: "Chapter published",
+        });
       }
-      toast({
-        title: "Success",
-        description: "Chapter published",
-      });
 
       router.refresh();
     } catch {
