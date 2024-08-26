@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 import Mux from "@mux/mux-node";
 import { db } from "@/lib/db";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
 const mux = new Mux({
   tokenId: process.env.MUX_TOKEN_ID,
@@ -14,7 +15,10 @@ export async function PATCH(
   { params }: { params: { courseId: string } }
 ) {
   try {
-    const { userId } = auth();
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
+    const userId = user?.id;
+
     const { courseId } = params;
     const values = await req.json();
 
@@ -46,7 +50,9 @@ export async function DELETE(
   { params }: { params: { courseId: string } }
 ) {
   try {
-    const { userId } = auth();
+   const { getUser } = getKindeServerSession();
+   const user = await getUser();
+   const userId = user?.id;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -66,26 +72,26 @@ export async function DELETE(
     const course = await db.course.findUnique({
       where: {
         id: params.courseId,
-        userId: userId,
+        userId,
       },
-      include: {
-        chapters: {
-          include: {
-            muxData: true,
-          },
-        },
-      },
+      // include: {
+      //   chapters: {
+      //     include: {
+      //       muxData: true,
+      //     },
+      //   },
+      // },
     });
 
     if (!course) {
       return new NextResponse("Not Found", { status: 404 });
     }
 
-    for (const chapter of course.chapters) {
-      if (chapter.muxData?.assetId) {
-        await mux.video.assets.delete(chapter.muxData.assetId);
-      }
-    }
+    // for (const chapter of course.chapters) {
+    //   if (chapter.muxData?.assetId) {
+    //     await mux.video.assets.delete(chapter.muxData.assetId);
+    //   }
+    // }
 
     const deletedCourse = await db.course.delete({
       where: {

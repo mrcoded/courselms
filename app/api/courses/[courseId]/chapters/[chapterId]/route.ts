@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 
 import Mux from "@mux/mux-node";
 import { db } from "@/lib/db";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
 const mux = new Mux({
   tokenId: process.env.MUX_TOKEN_ID,
@@ -14,7 +15,10 @@ export async function PATCH(
   { params }: { params: { courseId: string; chapterId: string } }
 ) {
   try {
-    const { userId } = auth();
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
+    const userId = user?.id;
+
     const { isPublished, ...values } = await req.json();
 
     if (!userId) {
@@ -88,7 +92,9 @@ export async function DELETE(
   { params }: { params: { courseId: string; chapterId: string } }
 ) {
   try {
-    const { userId } = auth();
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
+    const userId = user?.id;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
