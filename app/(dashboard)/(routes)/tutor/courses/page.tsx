@@ -1,15 +1,32 @@
-"use client";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
-import Link from "next/link";
+import { redirect } from "next/navigation";
+import { db } from "@/lib/db";
 
-import { Button } from "@/components/ui/button";
+import { columns } from "./_components/columns";
+import { DataTable } from "./_components/data-table";
 
-const CoursesPage = () => {
+const CoursesPage = async () => {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+  const userId = user?.id;
+
+  if (!userId) {
+    return redirect("/");
+  }
+
+  const courses = await db.course.findMany({
+    where: {
+      userId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
   return (
     <div className="p-6">
-      <Link href="/tutor/create">
-        <Button>New Course</Button>
-      </Link>
+      <DataTable columns={columns} data={courses} />
     </div>
   );
 };
