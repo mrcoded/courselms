@@ -1,10 +1,13 @@
-import { auth } from "@clerk/nextjs/server";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 
 const f = createUploadthing();
 
-const handleAuth = () => {
-  const { userId } = auth();
+const handleAuth = async () => {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+  const userId = user?.id;
+
   if (!userId) throw new Error("Unauthorized");
   return { userId };
 };
