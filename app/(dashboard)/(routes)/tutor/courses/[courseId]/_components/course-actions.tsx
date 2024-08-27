@@ -7,6 +7,7 @@ import { ConfirmModal } from "@/components/modals/confirm-modal";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
+import { useConfettiStore } from "@/hooks/use-confetti-store";
 
 interface CourseActionsProps {
   disabled: boolean;
@@ -22,6 +23,7 @@ const CourseActions = ({
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
+  const confetti = useConfettiStore();
 
   const onClick = async () => {
     try {
@@ -39,6 +41,7 @@ const CourseActions = ({
           title: "Success",
           description: "Course published",
         });
+        confetti.onOpen();
       }
 
       router.refresh();
