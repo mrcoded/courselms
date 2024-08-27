@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from "next/navigation";
 
 import { db } from "@/lib/db";
@@ -20,7 +20,9 @@ import Banner from "@/components/banner";
 import CourseActions from "./_components/course-actions";
 
 const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
-  const { userId } = auth();
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+  const userId = user?.id;
 
   if (!userId) {
     return redirect("/");
