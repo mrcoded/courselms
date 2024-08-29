@@ -9,6 +9,7 @@ import { Button } from "../ui/button";
 import { LogOut } from "lucide-react";
 
 import SearchInput from "../search-input";
+import { Suspense } from "react";
 
 const NavbarRoutes = () => {
   const pathname = usePathname();
@@ -23,7 +24,9 @@ const NavbarRoutes = () => {
     <>
       {isSearchPage && (
         <div className="hidden md:block">
-          <SearchInput />
+          <Suspense>
+            <SearchInput />
+          </Suspense>
         </div>
       )}
       <div className="flex gap-x-2 ml-auto items-center">
