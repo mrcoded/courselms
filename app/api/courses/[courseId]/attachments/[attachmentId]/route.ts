@@ -1,7 +1,7 @@
-import { db } from "@/lib/db";
-import { auth } from "@clerk/nextjs/server";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextResponse } from "next/server";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+
+import { db } from "@/lib/db";
 
 export async function DELETE(
   req: Request,
