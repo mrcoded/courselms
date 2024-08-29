@@ -54,9 +54,7 @@ const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
       toast({ title: "Success", description: "Course price updated" });
       toggleEdit();
       router.refresh();
-      console.log(typeof values);
     } catch {
-      console.log(typeof values);
       toast({
         variant: "destructive",
         title: "Error",
