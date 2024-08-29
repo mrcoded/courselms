@@ -17,7 +17,7 @@ export const FileUpload = ({ onchange, endpoint }: FileUploadProps) => {
         onchange(res?.[0].url);
       }}
       onUploadError={(error: Error) => {
-        toast(`${error?.message}`);
+        toast({ title: "Error", description: `${error?.message}` });
       }}
     />
   );
