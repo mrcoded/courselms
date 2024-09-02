@@ -2,14 +2,15 @@ import React from "react";
 import { redirect } from "next/navigation";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
-import { getChapter } from "@/../../lib/actions/get-chapter.actions";
-import Banner from "@/../../components/banner";
-import { Preview } from "@/../../components/preview";
+import { getChapter } from "@/lib/actions/get-chapter.actions";
+import Banner from "@/components/banner";
+import { Preview } from "@/components/preview";
 
-import { Separator } from "@/../../components/ui/separator";
+import { Separator } from "@/components/ui/separator";
 
 import VideoPlayer from "./_components/video-player";
 import CourseEnrollButton from "./_components/course-enroll-button";
+import CourseProgressButton from "./_components/course-progress-button";
 
 const ChapterIdPage = async ({
   params,
@@ -70,7 +71,12 @@ const ChapterIdPage = async ({
           <div className="p-4 flex flex-col md:flex-row items-center justify-between">
             <h2 className="text-2xl font-semibold mb-2">{chapter.title}</h2>
             {purchase ? (
-              <div></div>
+              <CourseProgressButton
+                chapterId={params.chapterId}
+                courseId={params.courseId}
+                nextChapterId={nextChapter?.id}
+                isCompleted={!!userProgress?.isCompleted}
+              />
             ) : (
               <CourseEnrollButton
                 courseId={params.courseId}
