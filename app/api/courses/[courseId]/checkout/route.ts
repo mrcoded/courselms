@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 import Stripe from "stripe";
 
-import { db } from "@/../../lib/db";
+import { db } from "@/lib/db";
 import { stripe } from "@/lib/stripe";
 
 export async function POST(
@@ -83,8 +83,8 @@ export async function POST(
       mode: "payment",
       line_items,
       metadata: {
+        courseId: course.id,
         userId: user.id,
-        orderId: course.id,
       },
       success_url: `${process.env.NEXT_PUBLIC_APP_URL}/courses/${course.id}?success=1`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/courses/${course.id}?cancelled=1`,
