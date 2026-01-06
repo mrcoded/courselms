@@ -1,0 +1,48 @@
+import { db } from "@/src/config/db";
+import { auth } from "@clerk/nextjs/server";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { NextResponse } from "next/server";
+
+export async function POST(
+  req: Request,
+  { params }: { params: { courseId: string } }
+) {
+  try {
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
+    const userId = user?.id;
+
+    const { courseId } = params;
+    const url = await req.json();
+
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const courseOwner = await db.course.findUnique({
+      where: {
+        id: courseId,
+        userId: userId,
+      },
+    });
+
+    if (!courseOwner) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const attachment = await db.attachment.create({
+      data: {
+        url: url.url,
+        name: url.url.split("/").pop(),
+        courseId: params.courseId,
+      },
+    });
+
+    return NextResponse.json(attachment);
+  } catch (error) {
+    console.log("[COURSEID_ATTACHMENTS]", error);
+    return new NextResponse("Internal Server Error", {
+      status: 500,
+    });
+  }
+}
