@@ -1,65 +1,42 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import axios from "axios";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { cn } from "@/lib/utils";
 import { Pencil } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-import {
-  Form,
-  FormControl,
-  FormMessage,
-  FormField,
-  FormItem,
-} from "@/src/components/ui/form";
-import { Button } from "@/src/components/ui/button";
-import { toast } from "@/src/components/ui/use-toast";
-import { Course } from "@prisma/client";
-import { cn } from "@/src/lib/utils";
-import { Combobox } from "@/src/components/ui/combobox";
+import axios from "axios";
+import { toast } from "sonner";
 
-interface CategoryFormProps {
-  initialData: Course;
-  courseId: string;
-  options: { label: string; value: string }[];
-}
+import { CategoryFormProps, CategoryInputValues } from "@/types/input.types";
+
+import { Button } from "@/components/ui/button";
+import CategoryInputForm from "@/components/forms/category-input-form";
 
 const CategoryForm = ({
   initialData,
   courseId,
   options,
 }: CategoryFormProps) => {
-  const [isEditing, setIsEditing] = useState(false);
-
-  const toggleEdit = () => setIsEditing((prev) => !prev);
-
   const router = useRouter();
 
-  const formSchema = z.object({
-    categoryId: z.string().min(1),
-  });
+  const [isEditing, setIsEditing] = useState(false);
+  // Toggle edit mode
+  const toggleEdit = () => setIsEditing((prev) => !prev);
 
-  const formMethods = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { categoryId: initialData?.categoryId || "" },
-  });
-
-  const { isSubmitting, isValid } = formMethods.formState;
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  // Handle form submission
+  const onSubmit = async (values: CategoryInputValues) => {
     try {
       await axios.patch(`/api/courses/${courseId}`, values);
-      toast({ title: "Success", description: "Course successfully updated" });
+      toast.success("Success", { description: "Course successfully updated" });
       toggleEdit();
       router.refresh();
     } catch (error) {
-      toast({ title: "Error", description: "Something went wrong" });
+      toast.error("Error", { description: "Something went wrong" });
     }
   };
 
+  // Find selected option label
   const selectedOption = options.find(
     (option) => option.value === initialData.categoryId
   );
@@ -92,30 +69,11 @@ const CategoryForm = ({
       )}
 
       {isEditing && (
-        <Form {...formMethods}>
-          <form
-            onSubmit={formMethods.handleSubmit(onSubmit)}
-            className="space-y-4 mt-4"
-          >
-            <FormField
-              control={formMethods.control}
-              name="categoryId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Combobox options={[...options]} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="flex items-center gap-x-2">
-              <Button disabled={!isValid || isSubmitting} type="submit">
-                Save
-              </Button>
-            </div>
-          </form>
-        </Form>
+        <CategoryInputForm
+          initialData={initialData}
+          onSubmit={onSubmit}
+          options={options}
+        />
       )}
     </div>
   );

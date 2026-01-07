@@ -1,60 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { z } from "zod";
-import axios from "axios";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { Pencil } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-import {
-  Form,
-  FormControl,
-  FormMessage,
-  FormField,
-  FormItem,
-} from "@/src/components/ui/form";
-import { Button } from "@/src/components/ui/button";
-import { Input } from "@/src/components/ui/input";
-import { toast } from "@/src/components/ui/use-toast";
+import axios from "axios";
+import { toast } from "sonner";
 
-interface TitleFormProps {
-  initialData: {
-    title: string;
-  };
-  courseId: string;
-}
+import { Button } from "@/components/ui/button";
+
+import TitleInputForm from "@/components/forms/title-input-form";
+import { TitleFormProps, TitleInputValues } from "@/types/input.types";
 
 const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
-  const [isEditing, setIsEditing] = useState(false);
-
-  const toggleEdit = () => setIsEditing((prev) => !prev);
-
   const router = useRouter();
 
-  const formSchema = z.object({
-    title: z.string().min(1, {
-      message: "title is required",
-    }),
-  });
+  const [isEditing, setIsEditing] = useState(false);
+  // Toggle edit mode
+  const toggleEdit = () => setIsEditing((prev) => !prev);
 
-  const formMethods = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: initialData,
-  });
-
-  const { isSubmitting, isValid } = formMethods.formState;
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: TitleInputValues) => {
     try {
       await axios.patch(`/api/courses/${courseId}`, values);
-      toast({ title: "Success", description: "Course successfully updated" });
+      toast("Success", { description: "Course successfully updated" });
       toggleEdit();
       router.refresh();
     } catch (error) {
-      toast({ title: "Error", description: "Something went wrong" });
+      toast("Error", { description: "Something went wrong" });
     }
   };
 
@@ -76,34 +48,11 @@ const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
       {!isEditing && <p className="text-sm mt-2">{initialData.title}</p>}
 
       {isEditing && (
-        <Form {...formMethods}>
-          <form
-            onSubmit={formMethods.handleSubmit(onSubmit)}
-            className="space-y-4 mt-4"
-          >
-            <FormField
-              control={formMethods.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      disabled={isSubmitting}
-                      placeholder="e.g 'Advanced web development'"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                  <div className="flex items-center gap-x-2">
-                    <Button type="submit" disabled={!isValid || isSubmitting}>
-                      Save
-                    </Button>
-                  </div>
-                </FormItem>
-              )}
-            />
-          </form>
-        </Form>
+        <TitleInputForm
+          onSubmit={onSubmit}
+          isEditing={isEditing}
+          initialData={initialData}
+        />
       )}
     </div>
   );
