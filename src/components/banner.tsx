@@ -1,7 +1,7 @@
 import React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/lib/utils";
 import { AlertTriangle, CheckCheckIcon } from "lucide-react";
 
 const bannerVariants = cva(
