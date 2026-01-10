@@ -1,17 +1,19 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 
-import { db } from "@/src/config/db";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { db } from "@/config/db";
+import { getServerSession } from "@/lib/get-server-session";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { courseId: string; chapterId: string } }
+  { params }: { params: Promise<{ courseId: string; chapterId: string }> }
 ) {
   try {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    const session = await getServerSession();
+    const user = session?.user;
     const userId = user?.id;
+
+    // Await params
+    const { courseId, chapterId } = await params;
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -19,7 +21,7 @@ export async function PATCH(
 
     const courseOwner = await db.course.findUnique({
       where: {
-        id: params.courseId,
+        id: courseId,
         userId: userId,
       },
     });
@@ -30,8 +32,8 @@ export async function PATCH(
 
     const unPublishedChapter = await db.chapter.update({
       where: {
-        id: params.chapterId,
-        courseId: params.courseId,
+        id: chapterId,
+        courseId: courseId,
       },
       data: {
         isPublished: false,
@@ -40,7 +42,7 @@ export async function PATCH(
 
     const publishedChaptersInCourse = await db.chapter.findMany({
       where: {
-        courseId: params.courseId,
+        courseId: courseId,
         isPublished: true,
       },
     });
@@ -48,7 +50,7 @@ export async function PATCH(
     if (!publishedChaptersInCourse.length) {
       await db.course.update({
         where: {
-          id: params.courseId,
+          id: courseId,
         },
         data: {
           isPublished: false,

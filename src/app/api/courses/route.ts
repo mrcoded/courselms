@@ -1,20 +1,24 @@
-import { db } from "@/src/config/db";
-import { auth } from "@clerk/nextjs/server";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { db } from "@/config/db";
+import { getServerSession } from "@/lib/get-server-session";
+
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    const session = await getServerSession();
+
+    const user = session?.user;
     const userId = user?.id;
 
+    // Get request body
     const { title } = await req.json();
 
+    //if user is not logged in
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // Create new course
     const course = await db.course.create({
       data: {
         userId,

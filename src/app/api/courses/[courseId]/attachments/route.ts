@@ -1,24 +1,28 @@
-import { db } from "@/src/config/db";
-import { auth } from "@clerk/nextjs/server";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { db } from "@/config/db";
+import { getServerSession } from "@/lib/get-server-session";
 import { NextResponse } from "next/server";
 
 export async function POST(
   req: Request,
-  { params }: { params: { courseId: string } }
+  { params }: { params: Promise<{ courseId: string }> }
 ) {
   try {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    const session = await getServerSession();
+    const user = session?.user;
     const userId = user?.id;
 
-    const { courseId } = params;
+    // Get courseId from params
+    const { courseId } = await params;
+
+    // Get request body
     const url = await req.json();
 
+    //if user is not logged in
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // Verify course ownership
     const courseOwner = await db.course.findUnique({
       where: {
         id: courseId,
@@ -26,15 +30,17 @@ export async function POST(
       },
     });
 
+    // If user is not the owner of the course
     if (!courseOwner) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // Create attachment
     const attachment = await db.attachment.create({
       data: {
         url: url.url,
         name: url.url.split("/").pop(),
-        courseId: params.courseId,
+        courseId: courseId,
       },
     });
 

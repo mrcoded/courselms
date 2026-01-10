@@ -1,22 +1,23 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 
-import { db } from "@/src/config/db";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { db } from "@/config/db";
+import { getServerSession } from "@/lib/get-server-session";
 
 export async function PATCH(
   req: Request,
   { params }: { params: { courseId: string } }
 ) {
   try {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    const session = await getServerSession();
+    const user = session?.user;
     const userId = user?.id;
 
+    //if user is not logged in
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // Verify course ownership
     const courseOwner = await db.course.findUnique({
       where: {
         id: params.courseId,
@@ -24,10 +25,12 @@ export async function PATCH(
       },
     });
 
+    // If user is not the owner of the course
     if (!courseOwner) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // Fetch the course with chapters
     const course = await db.course.findUnique({
       where: {
         id: params.courseId,
@@ -42,14 +45,17 @@ export async function PATCH(
       },
     });
 
+    // If course not found
     if (!course) {
       return new NextResponse("Not found", { status: 401 });
     }
 
+    // Validate required fields
     const hasPublishedChapter = course.chapters.some(
       (chapter) => chapter.isPublished
     );
 
+    // Check for required fields
     if (
       !course.title ||
       !course.description ||
@@ -62,6 +68,7 @@ export async function PATCH(
       });
     }
 
+    // Publish the course
     const publishedCourse = await db.course.update({
       where: {
         id: params.courseId,

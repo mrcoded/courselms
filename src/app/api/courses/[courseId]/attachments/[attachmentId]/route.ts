@@ -1,36 +1,43 @@
 import { NextResponse } from "next/server";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
-import { db } from "@/src/config/db";
+import { db } from "@/config/db";
+import { getServerSession } from "@/lib/get-server-session";
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { courseId: string; attachmentId: string } }
+  { params }: { params: Promise<{ courseId: string; attachmentId: string }> }
 ) {
   try {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    const session = await getServerSession();
+    const user = session?.user;
     const userId = user?.id;
 
+    //if user is not logged in
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // Get courseId and attachmentId from params
+    const { courseId, attachmentId } = await params;
+
+    // Verify course ownership
     const courseOwner = await db.course.findUnique({
       where: {
-        id: params.courseId,
+        id: courseId,
         userId: userId,
       },
     });
 
+    // If user is not the owner of the course
     if (!courseOwner) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // Delete attachment
     const attachment = await db.attachment.delete({
       where: {
-        courseId: params.courseId,
-        id: params.attachmentId,
+        courseId: courseId,
+        id: attachmentId,
       },
     });
 

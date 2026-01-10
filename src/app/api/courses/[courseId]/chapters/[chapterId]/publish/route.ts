@@ -1,46 +1,54 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 
-import { db } from "@/src/config/db";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { db } from "@/config/db";
+import { getServerSession } from "@/lib/get-server-session";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { courseId: string; chapterId: string } }
+  { params }: { params: Promise<{ courseId: string; chapterId: string }> }
 ) {
   try {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    const session = await getServerSession();
+    const user = session?.user;
     const userId = user?.id;
 
+    //if no userId
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // Get courseId and chapterId from params
+    const { courseId, chapterId } = await params;
+
+    // Verify course ownership
     const courseOwner = await db.course.findUnique({
       where: {
-        id: params.courseId,
+        id: courseId,
         userId: userId,
       },
     });
 
+    // If user is not the owner of the course
     if (!courseOwner) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // Find chapter and its mux data
     const chapter = await db.chapter.findUnique({
       where: {
-        id: params.chapterId,
-        courseId: params.courseId,
+        id: chapterId,
+        courseId: courseId,
       },
     });
 
+    // Find mux data
     const muxData = await db.muxData.findFirst({
       where: {
-        chapterId: params.chapterId,
+        chapterId: chapterId,
       },
     });
 
+    // If chapter or mux data is not found
     if (
       !chapter ||
       !muxData ||
@@ -53,10 +61,11 @@ export async function PATCH(
       });
     }
 
+    // Update chapter
     const publishedChapter = await db.chapter.update({
       where: {
-        id: params.chapterId,
-        courseId: params.courseId,
+        id: chapterId,
+        courseId: courseId,
       },
       data: {
         isPublished: true,

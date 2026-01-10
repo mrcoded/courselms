@@ -1,18 +1,19 @@
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextResponse } from "next/server";
 
 import Stripe from "stripe";
 
-import { db } from "@/src/config/db";
-import { stripe } from "@/src/lib/stripe";
+import { db } from "@/config/db";
+import { stripe } from "@/lib/stripe";
+import { getServerSession } from "@/lib/get-server-session";
 
 export async function POST(
   req: Request,
   { params }: { params: { courseId: string } }
 ) {
   try {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    const authSession = await getServerSession();
+    const user = authSession?.user;
+    const userId = user?.id;
 
     if (!user || !user.id || !user.email) {
       return new NextResponse("Unauthorized", { status: 401 });

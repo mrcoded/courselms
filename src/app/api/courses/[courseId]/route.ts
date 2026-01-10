@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 
 import Mux from "@mux/mux-node";
-import { db } from "@/src/config/db";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { db } from "@/config/db";
+
+import { getServerSession } from "@/lib/get-server-session";
 
 const mux = new Mux({
   tokenId: process.env.MUX_TOKEN_ID,
@@ -11,20 +12,24 @@ const mux = new Mux({
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { courseId: string } }
+  { params }: { params: Promise<{ courseId: string }> }
 ) {
   try {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    const session = await getServerSession();
+    const user = session?.user;
     const userId = user?.id;
 
-    const { courseId } = params;
+    // Get courseId from params
+    const { courseId } = await params;
+    // Get request body
     const values = await req.json();
 
+    //if user is not logged in
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // Verify course ownership
     const course = await db.course.update({
       where: {
         id: courseId,
@@ -46,31 +51,37 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { courseId: string } }
+  { params }: { params: Promise<{ courseId: string }> }
 ) {
   try {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    const session = await getServerSession();
+    const user = session?.user;
     const userId = user?.id;
 
+    // Get courseId from params
+    const { courseId } = await params;
+
+    //if user is not logged in
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // Verify course ownership
     const courseOwner = await db.course.findUnique({
       where: {
-        id: params.courseId,
+        id: courseId,
         userId,
       },
     });
 
+    // If user is not the owner of the course
     if (!courseOwner) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
     const course = await db.course.findUnique({
       where: {
-        id: params.courseId,
+        id: courseId,
         userId,
       },
       include: {
@@ -82,19 +93,22 @@ export async function DELETE(
       },
     });
 
+    // If course not found
     if (!course) {
       return new NextResponse("Not Found", { status: 404 });
     }
 
+    // Delete associated Mux assets
     for (const chapter of course.chapters) {
       if (chapter.muxData?.assetId) {
         await mux.video.assets.delete(chapter.muxData.assetId);
       }
     }
 
+    // Delete the course
     const deletedCourse = await db.course.delete({
       where: {
-        id: params.courseId,
+        id: courseId,
       },
     });
 

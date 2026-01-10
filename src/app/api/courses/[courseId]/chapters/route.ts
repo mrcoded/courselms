@@ -1,24 +1,28 @@
-import { db } from "@/src/config/db";
-import { auth } from "@clerk/nextjs/server";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { db } from "@/config/db";
 import { NextResponse } from "next/server";
+import { getServerSession } from "@/lib/get-server-session";
 
 export async function POST(
   req: Request,
-  { params }: { params: { courseId: string } }
+  { params }: { params: Promise<{ courseId: string }> }
 ) {
   try {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
+    const session = await getServerSession();
+    const user = session?.user;
     const userId = user?.id;
 
-    const { courseId } = params;
+    // Get courseId from params
+    const { courseId } = await params;
+
+    // Get request body
     const { title } = await req.json();
 
+    //if user is not logged in
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // Verify course ownership
     const courseOwner = await db.course.findUnique({
       where: {
         id: courseId,
@@ -26,25 +30,28 @@ export async function POST(
       },
     });
 
+    // If user is not the owner of the course
     if (!courseOwner) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // Get the last chapter to determine the new position
     const lastChapter = await db.chapter.findFirst({
       where: {
-        courseId: params.courseId,
+        courseId: courseId,
       },
       orderBy: {
         position: "desc",
       },
     });
 
+    // Calculate the new position
     const newPostition = lastChapter ? lastChapter.position + 1 : 1;
-
+    // Create the new chapter
     const chapter = await db.chapter.create({
       data: {
         title,
-        courseId: params.courseId,
+        courseId: courseId,
         position: newPostition,
       },
     });
