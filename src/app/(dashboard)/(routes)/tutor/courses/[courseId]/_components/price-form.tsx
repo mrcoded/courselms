@@ -1,63 +1,36 @@
 "use client";
 
 import { useState } from "react";
-import { cn } from "@/src/lib/utils";
-import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 import { Pencil } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 import axios from "axios";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Course } from "@prisma/client";
+import { toast } from "sonner";
 
-import { formatPrice } from "@/src/lib/formatPrice";
+import { formatPrice } from "@/lib/formatPrice";
+import { PriceFormProps, PriceInputValues } from "@/types/input.types";
 
-import {
-  Form,
-  FormControl,
-  FormMessage,
-  FormField,
-  FormItem,
-} from "@/src/components/ui/form";
-import { Button } from "@/src/components/ui/button";
-import { toast } from "@/src/components/ui/use-toast";
-import { Input } from "@/src/components/ui/input";
-
-interface PriceFormProps {
-  initialData: Course;
-  courseId: string;
-}
+import { Button } from "@/components/ui/button";
+import PriceInputForm from "@/components/forms/price-input";
 
 const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
-  const [isEditing, setIsEditing] = useState(false);
-
-  const toggleEdit = () => setIsEditing((prev) => !prev);
-
   const router = useRouter();
 
-  const formSchema = z.object({
-    price: z.coerce.number(),
-  });
+  const [isEditing, setIsEditing] = useState(false);
 
-  const formMethods = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      price: initialData.price || undefined,
-    },
-  });
+  // Toggle edit mode
+  const toggleEdit = () => setIsEditing((prev) => !prev);
 
-  const { isSubmitting, isValid } = formMethods.formState;
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  // Handle form submission
+  const onSubmit = async (values: PriceInputValues) => {
     try {
       await axios.patch(`/api/courses/${courseId}`, values);
-      toast({ title: "Success", description: "Course price updated" });
+      toast.success("Success", { description: "Course price updated" });
       toggleEdit();
       router.refresh();
     } catch {
-      toast({
-        variant: "destructive",
-        title: "Error",
+      toast.success("Error", {
         description: "Something went wrong",
       });
     }
@@ -90,36 +63,7 @@ const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
       )}
 
       {isEditing && (
-        <Form {...formMethods}>
-          <form
-            onSubmit={formMethods.handleSubmit(onSubmit)}
-            className="space-y-4 mt-4"
-          >
-            <FormField
-              control={formMethods.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      disabled={isSubmitting}
-                      placeholder="Set the course price"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="flex items-center gap-x-2">
-              <Button type="submit" disabled={!isValid || isSubmitting}>
-                Save
-              </Button>
-            </div>
-          </form>
-        </Form>
+        <PriceInputForm initialData={initialData} onSubmit={onSubmit} />
       )}
     </div>
   );
