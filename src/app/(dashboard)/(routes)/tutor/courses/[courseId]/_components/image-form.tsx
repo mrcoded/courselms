@@ -2,36 +2,32 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
-import axios from "axios";
-import { FileUpload } from "@/src/components/file-upload";
-import { Course } from "@prisma/client";
-
 import { ImageIcon, Pencil, PlusCircle } from "lucide-react";
 
-import { Button } from "@/src/components/ui/button";
-import { toast } from "@/src/components/ui/use-toast";
+import { z } from "zod";
+import axios from "axios";
 
-interface ImageFormProps {
-  initialData: Course;
-  courseId: string;
-}
+import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
+import { FileUpload } from "@/components/file-upload";
+
+import { ImageFormProps } from "@/types/input.types";
 
 const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
+  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((prev) => !prev);
 
-  const router = useRouter();
-
+  // Validation
   const formSchema = z.object({
     imageUrl: z.string().min(1, {
       message: "imageUrl is required",
     }),
   });
 
+  // Submit form handler
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(`/api/courses/${courseId}`, values);

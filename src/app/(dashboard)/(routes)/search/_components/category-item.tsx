@@ -1,7 +1,7 @@
 "use client";
 
 import qs from "query-string";
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/lib/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { IconType } from "react-icons/lib";
 

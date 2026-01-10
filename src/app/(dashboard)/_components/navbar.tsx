@@ -1,6 +1,6 @@
 import React from "react";
 import MobileSidebar from "./mobile-sidebar";
-import NavbarRoutes from "@/src/components/shared/navbar-routes";
+import NavbarRoutes from "@/components/shared/navbar-routes";
 
 const Navbar = () => {
   return (

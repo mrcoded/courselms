@@ -2,49 +2,40 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
-import axios from "axios";
-import MuxPlayer from "@mux/mux-player-react";
-import { FileUpload } from "@/src/components/file-upload";
-import { Chapter, MuxData } from "@prisma/client";
-
 import { Pencil, PlusCircle, Video } from "lucide-react";
 
-import { Button } from "@/src/components/ui/button";
-import { toast } from "@/src/components/ui/use-toast";
+import axios from "axios";
+import { toast } from "sonner";
+import MuxPlayer from "@mux/mux-player-react";
 
-interface ChapterVideoFormProps {
-  initialData: Chapter & { muxData?: MuxData | null };
-  courseId: string;
-  chapterId: string;
-}
+import { Button } from "@/components/ui/button";
+import { FileUpload } from "@/components/file-upload";
 
-const formSchema = z.object({
-  videoUrl: z.string().min(1),
-});
+import { ChapterVideoFormProps, VideoInputValues } from "@/types/input.types";
 
 const ChapterVideoForm = ({
   initialData,
   courseId,
   chapterId,
 }: ChapterVideoFormProps) => {
+  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
-
+  console.log(initialData?.muxData?.playbackId);
+  // Toggle edit mode
   const toggleEdit = () => setIsEditing((prev) => !prev);
 
-  const router = useRouter();
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  // Handle form submission
+  const onSubmit = async (values: VideoInputValues) => {
     try {
       await axios.patch(
         `/api/courses/${courseId}/chapters/${chapterId}`,
         values
       );
-      toast({ title: "Success", description: "Chapter Video updated" });
+      toast.success("Success", { description: "Chapter Video updated" });
       toggleEdit();
       router.refresh();
     } catch (error) {
-      toast({ title: "Error", description: "Something went wrong" });
+      toast.error("Error", { description: "Something went wrong" });
     }
   };
 
@@ -93,7 +84,7 @@ const ChapterVideoForm = ({
             }}
           />
           <div className="text-xs text-muted-foreground mt-4">
-            Upload this chapter`&apos;`s video
+            Upload this chapter &apos;s video
           </div>
         </div>
       )}

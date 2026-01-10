@@ -6,7 +6,7 @@ import { Search } from "lucide-react";
 import qs from "query-string";
 
 import { Input } from "./ui/input";
-import { useDebounce } from "@/src/hooks/use-debounce";
+import { useDebounce } from "@/hooks/use-debounce";
 
 const SearchInput = () => {
   const [value, setValue] = useState<string>("");
