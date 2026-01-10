@@ -1,9 +1,6 @@
-"use client";
-
 import React from "react";
 
 import { useForm } from "react-hook-form";
-import type { Course } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -16,18 +13,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
 
-import { CategoryInputValues } from "@/types/input.types";
 import { categoryInputSchema } from "@/validators/input-field";
+import { CategoryFormProps, CategoryInputValues } from "@/types/input.types";
 
 const CategoryInputForm = ({
-  onSubmit,
   options,
+  onSubmit,
   initialData,
-}: {
-  options: { label: string; value: string }[];
-  onSubmit: (data: CategoryInputValues) => void;
-  initialData?: Course;
-}) => {
+}: CategoryFormProps) => {
   // Initialize form methods
   const formMethods = useForm<CategoryInputValues>({
     resolver: zodResolver(categoryInputSchema),
