@@ -1,62 +1,37 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { z } from "zod";
-import { Course } from "@prisma/client";
-import axios from "axios";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { cn } from "@/lib/utils";
 import { Pencil } from "lucide-react";
-import { cn } from "@/src/lib/utils";
+import { useRouter } from "next/navigation";
+
+import axios from "axios";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
+import DescriptionInputForm from "@/components/forms/description-input";
 
 import {
-  Form,
-  FormControl,
-  FormMessage,
-  FormField,
-  FormItem,
-} from "@/src/components/ui/form";
-import { Button } from "@/src/components/ui/button";
-import { toast } from "@/src/components/ui/use-toast";
-import { Textarea } from "@/src/components/ui/textarea";
-
-interface DescriptionFormProps {
-  initialData: Course;
-  courseId: string;
-}
+  DescriptionFormProps,
+  DescriptionInputValues,
+} from "@/types/input.types";
 
 const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
+  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
 
+  // Toggle edit mode
   const toggleEdit = () => setIsEditing((prev) => !prev);
 
-  const router = useRouter();
-
-  const formSchema = z.object({
-    description: z.string().min(1, {
-      message: "description is required",
-    }),
-  });
-
-  const formMethods = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      description: initialData?.description || "",
-    },
-  });
-
-  const { isSubmitting, isValid } = formMethods.formState;
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  // Handle form submission
+  const onSubmit = async (values: DescriptionInputValues) => {
     try {
       await axios.patch(`/api/courses/${courseId}`, values);
-      toast({ title: "Success", description: "Course successfully updated" });
+      toast.success("Success", { description: "Course successfully updated" });
       toggleEdit();
       router.refresh();
     } catch (error) {
-      toast({ title: "Error", description: "Something went wrong" });
+      toast.error("Error", { description: "Something went wrong" });
     }
   };
 
@@ -87,34 +62,11 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
       )}
 
       {isEditing && (
-        <Form {...formMethods}>
-          <form
-            onSubmit={formMethods.handleSubmit(onSubmit)}
-            className="space-y-4 mt-4"
-          >
-            <FormField
-              control={formMethods.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Textarea
-                      disabled={isSubmitting}
-                      placeholder="e.g 'This course is about...'"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                  <div className="flex items-center gap-x-2">
-                    <Button type="submit" disabled={!isValid || isSubmitting}>
-                      Save
-                    </Button>
-                  </div>
-                </FormItem>
-              )}
-            />
-          </form>
-        </Form>
+        <DescriptionInputForm
+          courseId={courseId}
+          onSubmit={onSubmit}
+          initialData={initialData}
+        />
       )}
     </div>
   );
