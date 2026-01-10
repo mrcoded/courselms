@@ -4,9 +4,9 @@ import { Metadata } from "next";
 import { Inter } from "next/font/google";
 
 import Loading from "./loading";
-import QueryProvider from "@/src/providers/query-provider";
-import { ToastProvider } from "@/src/providers/toaster-provider";
-import { ConfettiProvider } from "@/src/providers/confetti-provider";
+import QueryProvider from "@/providers/query-provider";
+import { ToastProvider } from "@/providers/toaster-provider";
+import { ConfettiProvider } from "@/providers/confetti-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
