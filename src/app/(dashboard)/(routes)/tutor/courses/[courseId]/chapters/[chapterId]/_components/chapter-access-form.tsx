@@ -1,70 +1,44 @@
 "use client";
 
 import { useState } from "react";
+import { Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-import { cn } from "@/src/lib/utils";
-import { Pencil } from "lucide-react";
-import { Chapter } from "@prisma/client";
-
 import axios from "axios";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+
+import { Button } from "@/components/ui/button";
+import AccessSelectForm from "@/components/forms/access-select";
 
 import {
-  Form,
-  FormControl,
-  FormMessage,
-  FormField,
-  FormItem,
-  FormDescription,
-} from "@/src/components/ui/form";
-import { Button } from "@/src/components/ui/button";
-import { toast } from "@/src/components/ui/use-toast";
-import { Checkbox } from "@/src/components/ui/checkbox";
-
-interface ChapterAccessFormProps {
-  initialData: Chapter;
-  courseId: string;
-  chapterId: string;
-}
-
-const formSchema = z.object({
-  isFree: z.boolean().default(false),
-});
+  AccessSelectValues,
+  ChapterAccessFormProps,
+} from "@/types/input.types";
 
 const ChapterAccessForm = ({
   initialData,
   courseId,
   chapterId,
 }: ChapterAccessFormProps) => {
+  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
 
+  // Toggle edit mode
   const toggleEdit = () => setIsEditing((prev) => !prev);
 
-  const router = useRouter();
-
-  const formMethods = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      isFree: !!initialData.isFree,
-    },
-  });
-
-  const { isSubmitting, isValid } = formMethods.formState;
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  // Handle form submission
+  const onSubmit = async (values: AccessSelectValues) => {
     try {
       await axios.patch(
         `/api/courses/${courseId}/chapters/${chapterId}`,
         values
       );
-      toast({ title: "Success", description: "Chapter access updated" });
+      toast.success("Success", { description: "Chapter access updated" });
       toggleEdit();
       router.refresh();
     } catch (error) {
-      toast({ title: "Error", description: "Something went wrong" });
+      toast.error("Error", { description: "Something went wrong" });
     }
   };
 
@@ -99,39 +73,7 @@ const ChapterAccessForm = ({
       )}
 
       {isEditing && (
-        <Form {...formMethods}>
-          <form
-            onSubmit={formMethods.handleSubmit(onSubmit)}
-            className="space-y-4 mt-4"
-          >
-            <FormField
-              control={formMethods.control}
-              name="isFree"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormDescription>
-                      Check this box if you want to make this chapter free for
-                      preview
-                    </FormDescription>
-                  </div>
-                  <FormMessage />
-                  <div className="flex items-center gap-x-2">
-                    <Button type="submit" disabled={!isValid || isSubmitting}>
-                      Save
-                    </Button>
-                  </div>
-                </FormItem>
-              )}
-            />
-          </form>
-        </Form>
+        <AccessSelectForm onSubmit={onSubmit} initialData={initialData} />
       )}
     </div>
   );
