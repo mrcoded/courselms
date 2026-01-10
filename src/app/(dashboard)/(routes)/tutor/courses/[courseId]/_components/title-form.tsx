@@ -8,25 +8,29 @@ import axios from "axios";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-
 import TitleInputForm from "@/components/forms/title-input-form";
+
 import { TitleFormProps, TitleInputValues } from "@/types/input.types";
 
 const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
   const router = useRouter();
 
   const [isEditing, setIsEditing] = useState(false);
+
   // Toggle edit mode
   const toggleEdit = () => setIsEditing((prev) => !prev);
 
+  // Handle form submission
   const onSubmit = async (values: TitleInputValues) => {
     try {
       await axios.patch(`/api/courses/${courseId}`, values);
-      toast("Success", { description: "Course successfully updated" });
-      toggleEdit();
+      toast.success("Success", {
+        description: "Course successfully updated",
+      });
+      toggleEdit?.();
       router.refresh();
-    } catch (error) {
-      toast("Error", { description: "Something went wrong" });
+    } catch {
+      toast.error("Error", { description: "Something went wrong" });
     }
   };
 
@@ -45,7 +49,7 @@ const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
           )}
         </Button>
       </div>
-      {!isEditing && <p className="text-sm mt-2">{initialData.title}</p>}
+      {!isEditing && <p className="text-sm mt-2">{initialData?.title}</p>}
 
       {isEditing && (
         <TitleInputForm

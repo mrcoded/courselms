@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { useRouter } from "next/navigation";
 
@@ -19,17 +17,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { titleInputSchema } from "@/validators/input-field";
-import { TitleInputValues } from "@/types/input.types";
+import { TitleFormProps, TitleInputValues } from "@/types/input.types";
 
 const TitleInputForm = ({
   onSubmit,
   isEditing,
   initialData,
-}: {
-  isEditing?: boolean;
-  onSubmit: (data: TitleInputValues) => void;
-  initialData?: TitleInputValues;
-}) => {
+}: TitleFormProps) => {
   const router = useRouter();
 
   // Initialize form methods
@@ -43,7 +37,10 @@ const TitleInputForm = ({
 
   return (
     <Form {...formMethods}>
-      <form onSubmit={formMethods.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        onSubmit={formMethods.handleSubmit(onSubmit)}
+        className={isEditing ? "space-y-4 mt-4" : "space-y-8"}
+      >
         <FormField
           control={formMethods.control}
           name="title"
