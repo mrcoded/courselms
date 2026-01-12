@@ -74,7 +74,6 @@ const ChapterDescriptionForm = ({
 
       {isEditing && (
         <DescriptionInputForm
-          courseId={courseId}
           onSubmit={onSubmit}
           isEditing={isEditing}
           initialData={initialData}

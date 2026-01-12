@@ -1,11 +1,11 @@
 "use client";
 
-import { ourFileRouter } from "@/src/app/api/uploadthing/core";
-import { UploadDropzone } from "@/src/lib/uploadthing";
-import { toast } from "./ui/use-toast";
+import { ourFileRouter } from "@/app/api/uploadthing/core";
+import { UploadDropzone } from "@/lib/uploadthing";
+import { toast } from "sonner";
 
 interface FileUploadProps {
-  onchange: (url?: string) => void;
+  onchange: (ufsUrl?: string) => void;
   endpoint: keyof typeof ourFileRouter;
 }
 
@@ -14,10 +14,10 @@ export const FileUpload = ({ onchange, endpoint }: FileUploadProps) => {
     <UploadDropzone
       endpoint={endpoint}
       onClientUploadComplete={(res) => {
-        onchange(res?.[0].url);
+        onchange(res?.[0].ufsUrl);
       }}
       onUploadError={(error: Error) => {
-        toast({ title: "Error", description: `${error?.message}` });
+        toast.error("Error", { description: `${error?.message}` });
       }}
     />
   );

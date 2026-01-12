@@ -12,13 +12,15 @@ export async function PATCH(
     const user = session?.user;
     const userId = user?.id;
 
-    // Await params
+    // get courseId and chapterId from params
     const { courseId, chapterId } = await params;
 
+    //if user is not logged in
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // Verify course ownership
     const courseOwner = await db.course.findUnique({
       where: {
         id: courseId,
@@ -26,10 +28,12 @@ export async function PATCH(
       },
     });
 
+    // If user is not the owner of the course
     if (!courseOwner) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // update chapter to unpublished
     const unPublishedChapter = await db.chapter.update({
       where: {
         id: chapterId,
@@ -40,6 +44,7 @@ export async function PATCH(
       },
     });
 
+    // Get all published chapters in course
     const publishedChaptersInCourse = await db.chapter.findMany({
       where: {
         courseId: courseId,
@@ -47,6 +52,7 @@ export async function PATCH(
       },
     });
 
+    // If no chapters are published in course, set course to unpublished
     if (!publishedChaptersInCourse.length) {
       await db.course.update({
         where: {
