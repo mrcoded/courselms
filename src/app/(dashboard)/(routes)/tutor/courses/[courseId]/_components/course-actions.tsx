@@ -1,95 +1,39 @@
 "use client";
 
-import { useState } from "react";
 import { Trash } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { ConfirmModal } from "@/src/components/modals/confirm-modal";
-import axios from "axios";
-import { Button } from "@/src/components/ui/button";
-import { toast } from "@/src/components/ui/use-toast";
-import { useConfettiStore } from "@/src/hooks/use-confetti-store";
 
-interface CourseActionsProps {
-  disabled: boolean;
-  isPublished: boolean;
-  courseId: string;
-}
+import { Button } from "@/components/ui/button";
+import { ConfirmModal } from "@/components/modals/confirm-modal";
+
+import { CourseActionsProps } from "@/types/input.types";
+
+import { useClickActions } from "@/hooks/use-click-action";
+import { useDeleteActions } from "@/hooks/use-delete-actions";
 
 const CourseActions = ({
   courseId,
   isPublished,
   disabled,
 }: CourseActionsProps) => {
-  const router = useRouter();
+  //Chapter Click Action hooks
+  const { mutate: onCourseClickHandler, isPending: courseIsUpdating } =
+    useClickActions(isPublished, courseId);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const confetti = useConfettiStore();
-
-  const onClick = async () => {
-    try {
-      setIsLoading(true);
-
-      if (isPublished) {
-        await axios.patch(`/api/courses/${courseId}/unpublish`);
-        toast({
-          title: "Success",
-          description: "Course Unpublished",
-        });
-      } else {
-        await axios.patch(`/api/courses/${courseId}/publish`);
-        toast({
-          title: "Success",
-          description: "Course published",
-        });
-        confetti.onOpen();
-      }
-
-      router.refresh();
-    } catch {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Something went wrong",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const onDelete = async () => {
-    try {
-      setIsLoading(true);
-
-      await axios.delete(`/api/courses/${courseId}`);
-      toast({
-        title: "Success",
-        description: "Course deleted",
-      });
-      router.refresh();
-      router.push(`/tutor/courses`);
-    } catch {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Something went wrong",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //onDelete handler
+  const { mutate: deleteCourseHandler, isPending } = useDeleteActions(courseId);
 
   return (
     <div className="flex items-center gap-x-2">
       <Button
-        onClick={onClick}
-        disabled={disabled || isLoading}
+        onClick={() => onCourseClickHandler}
+        disabled={disabled || courseIsUpdating}
         variant="outline"
         size="sm"
       >
         {isPublished ? "Unpublish" : "Publish"}
       </Button>
-      <ConfirmModal onConfirm={onDelete}>
-        <Button size="sm" disabled={isLoading}>
+      <ConfirmModal onConfirm={() => deleteCourseHandler}>
+        <Button size="sm" disabled={isPending}>
           <Trash className="h-4 w-4" />
         </Button>
       </ConfirmModal>

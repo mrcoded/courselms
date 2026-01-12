@@ -1,19 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import { Trash } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { ConfirmModal } from "@/src/components/modals/confirm-modal";
-import axios from "axios";
-import { Button } from "@/src/components/ui/button";
-import { toast } from "@/src/components/ui/use-toast";
 
-interface ChapterActionsProps {
-  disabled: boolean;
-  isPublished: boolean;
-  courseId: string;
-  chapterId: string;
-}
+import { Button } from "@/components/ui/button";
+import { ConfirmModal } from "@/components/modals/confirm-modal";
+
+import { ChapterActionsProps } from "@/types/input.types";
+
+import { useUpdatingStore } from "@/store/useUpdatingStore";
+
+import { useClickActions } from "@/hooks/use-click-action";
+import { useDeleteActions } from "@/hooks/use-delete-actions";
 
 const ChapterActions = ({
   chapterId,
@@ -21,78 +18,26 @@ const ChapterActions = ({
   isPublished,
   disabled,
 }: ChapterActionsProps) => {
-  const router = useRouter();
+  //Course Click Action hooks
+  const { mutate: onChapterClickHandler, isPending: chapterClickUpdating } =
+    useClickActions(isPublished, courseId, chapterId);
 
-  const [isLoading, setIsLoading] = useState(false);
-
-  const onClick = async () => {
-    try {
-      setIsLoading(true);
-
-      if (isPublished) {
-        await axios.patch(
-          `/api/courses/${courseId}/chapters/${chapterId}/unpublish`
-        );
-        toast({
-          title: "Success",
-          description: "Chapter Unpublished",
-        });
-      } else {
-        await axios.patch(
-          `/api/courses/${courseId}/chapters/${chapterId}/publish`
-        );
-        toast({
-          title: "Success",
-          description: "Chapter published",
-        });
-      }
-
-      router.refresh();
-    } catch {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Something went wrong",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const onDelete = async () => {
-    try {
-      setIsLoading(true);
-
-      await axios.delete(`/api/courses/${courseId}/chapters/${chapterId}`);
-      toast({
-        title: "Success",
-        description: "Chapter deleted",
-      });
-      router.refresh();
-      router.push(`/tutor/courses/${courseId}`);
-    } catch {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Something went wrong",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //onDelete handler
+  const { mutate: deleteChapterHandler, isPending: isChapterDeleting } =
+    useDeleteActions(courseId, chapterId);
 
   return (
     <div className="flex items-center gap-x-2">
       <Button
-        onClick={onClick}
-        disabled={disabled || isLoading}
+        onClick={() => onChapterClickHandler()}
+        disabled={disabled || chapterClickUpdating}
         variant="outline"
         size="sm"
       >
         {isPublished ? "Unpublish" : "Publish"}
       </Button>
-      <ConfirmModal onConfirm={onDelete}>
-        <Button size="sm" disabled={isLoading}>
+      <ConfirmModal onConfirm={() => deleteChapterHandler(undefined)}>
+        <Button size="sm" disabled={isChapterDeleting}>
           <Trash className="h-4 w-4" />
         </Button>
       </ConfirmModal>
