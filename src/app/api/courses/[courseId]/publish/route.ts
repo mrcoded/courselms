@@ -5,12 +5,15 @@ import { getServerSession } from "@/lib/get-server-session";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { courseId: string } }
+  { params }: { params: Promise<{ courseId: string }> }
 ) {
   try {
     const session = await getServerSession();
     const user = session?.user;
     const userId = user?.id;
+
+    // Get courseId from params
+    const { courseId } = await params;
 
     //if user is not logged in
     if (!userId) {
@@ -20,7 +23,7 @@ export async function PATCH(
     // Verify course ownership
     const courseOwner = await db.course.findUnique({
       where: {
-        id: params.courseId,
+        id: courseId,
         userId: userId,
       },
     });
@@ -33,7 +36,7 @@ export async function PATCH(
     // Fetch the course with chapters
     const course = await db.course.findUnique({
       where: {
-        id: params.courseId,
+        id: courseId,
         userId,
       },
       include: {
@@ -71,7 +74,7 @@ export async function PATCH(
     // Publish the course
     const publishedCourse = await db.course.update({
       where: {
-        id: params.courseId,
+        id: courseId,
         userId,
       },
       data: {
