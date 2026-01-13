@@ -1,20 +1,22 @@
 "use client";
 
 import Link from "next/link";
+
+import { cn } from "@/lib/utils";
 import { Course } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-
 import { ArrowUpDown, MoreHorizontal, Pencil } from "lucide-react";
-import { Button } from "@/src/components/ui/button";
+
+import { formatPrice } from "@/lib/formatPrice";
+
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/src/components/ui/dropdown-menu";
-import { Badge } from "@/src/components/ui/badge";
-import { cn } from "@/src/lib/utils";
-import { formatPrice } from "@/src/lib/formatPrice";
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 
 export const columns: ColumnDef<Course>[] = [
   {

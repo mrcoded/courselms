@@ -71,6 +71,8 @@ const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
               alt="Upload"
               fill
               className="object-cover rounded-md"
+              decoding="async"
+              priority
             />
           </div>
         ))}

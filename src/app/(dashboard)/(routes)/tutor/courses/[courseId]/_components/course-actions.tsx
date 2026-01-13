@@ -25,14 +25,14 @@ const CourseActions = ({
   return (
     <div className="flex items-center gap-x-2">
       <Button
-        onClick={() => onCourseClickHandler}
+        onClick={() => onCourseClickHandler()}
         disabled={disabled || courseIsUpdating}
         variant="outline"
         size="sm"
       >
         {isPublished ? "Unpublish" : "Publish"}
       </Button>
-      <ConfirmModal onConfirm={() => deleteCourseHandler}>
+      <ConfirmModal onConfirm={() => deleteCourseHandler(undefined)}>
         <Button size="sm" disabled={isPending}>
           <Trash className="h-4 w-4" />
         </Button>

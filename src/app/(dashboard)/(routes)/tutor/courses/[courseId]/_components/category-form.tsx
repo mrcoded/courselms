@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { CategoryFormProps, CategoryInputValues } from "@/types/input.types";
 
 import { Button } from "@/components/ui/button";
-import CategoryInputForm from "@/components/forms/category-input-form";
+import CategoryInputForm from "@/components/forms/category-input";
 
 const CategoryForm = ({
   initialData,
@@ -19,10 +19,14 @@ const CategoryForm = ({
   options,
 }: CategoryFormProps) => {
   const router = useRouter();
-
   const [isEditing, setIsEditing] = useState(false);
   // Toggle edit mode
   const toggleEdit = () => setIsEditing((prev) => !prev);
+
+  // Find selected option label
+  const selectedOption = options.find(
+    (option) => option.value === initialData.categoryId
+  );
 
   // Handle form submission
   const onSubmit = async (values: CategoryInputValues) => {
@@ -35,11 +39,6 @@ const CategoryForm = ({
       toast.error("Error", { description: "Something went wrong" });
     }
   };
-
-  // Find selected option label
-  const selectedOption = options.find(
-    (option) => option.value === initialData.categoryId
-  );
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
@@ -73,6 +72,7 @@ const CategoryForm = ({
           initialData={initialData}
           onSubmit={onSubmit}
           options={options}
+          courseId={courseId}
         />
       )}
     </div>
