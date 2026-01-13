@@ -2,57 +2,48 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
-import axios from "axios";
-import { FileUpload } from "@/src/components/file-upload";
-import { Attachment, Course } from "@prisma/client";
-
 import { File, Loader2, PlusCircle, X } from "lucide-react";
 
-import { Button } from "@/src/components/ui/button";
-import { toast } from "@/src/components/ui/use-toast";
+import axios from "axios";
+import { toast } from "sonner";
 
-interface AttachmentFormProps {
-  initialData: Course & { attachments: Attachment[] };
-  courseId: string;
-}
+import { useGetIdStore } from "@/store/useIdStore";
+
+import {
+  AttachmentFormProps,
+  AttachmentInputValues,
+} from "@/types/input.types";
+
+import { Button } from "@/components/ui/button";
+import { FileUpload } from "@/components/file-upload";
+import { useDeleteActions } from "@/hooks/use-delete-actions";
 
 const AttachmentForm = ({ initialData, courseId }: AttachmentFormProps) => {
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-
-  const toggleEdit = () => setIsEditing((prev) => !prev);
-
   const router = useRouter();
 
-  const formSchema = z.object({
-    url: z.string().min(1),
-  });
+  // Get attachment id
+  const getId = useGetIdStore((state) => state.getId);
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  // Delete attachment handler
+  const { mutate: onAttachmentDelete } = useDeleteActions(
+    courseId,
+    getId ?? ""
+  );
+
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  // Toggle edit mode
+  const toggleEdit = () => setIsEditing((prev) => !prev);
+
+  // Handle form submission
+  const onSubmit = async (values: AttachmentInputValues) => {
     try {
       await axios.post(`/api/courses/${courseId}/attachments`, values);
-      toast({ title: "Success", description: "Course attachment added" });
+      toast.success("Success", { description: "Course attachment added" });
       toggleEdit();
       router.refresh();
     } catch (error) {
-      toast({ title: "Error", description: "Something went wrong" });
-    }
-  };
-
-  const onDelete = async (id: string) => {
-    try {
-      setDeletingId(id);
-      await axios.delete(`/api/courses/${courseId}/attachments/${id}`);
-      toast({
-        title: "Success",
-        description: "Attachment successfully deleted",
-      });
-      router.refresh();
-    } catch {
-      toast({ title: "Error", description: "Something went wrong" });
-    } finally {
-      setDeletingId(null);
+      toast.error("Error", { description: "Something went wrong" });
     }
   };
 
@@ -72,30 +63,30 @@ const AttachmentForm = ({ initialData, courseId }: AttachmentFormProps) => {
       </div>
       {!isEditing && (
         <>
-          {initialData.attachments.length === 0 && (
+          {initialData?.attachments?.length === 0 && (
             <p className="text-sm mt-2 text-slate-500 italic">
               No attachments yet
             </p>
           )}
-          {initialData.attachments.length > 0 && (
+          {initialData?.attachments && initialData?.attachments?.length > 0 && (
             <div className="space-y-2">
-              {initialData.attachments.map((attachment) => (
+              {initialData?.attachments?.map((attachment) => (
                 <div
                   key={attachment.id}
                   className="flex items-center justify-between p-3 w-full bg-sky-100 border-sky-200 border text-sky-700 rounded-md"
                 >
                   <File className="h-4 w-4 mr-2 flex-shrink-0" />
                   <p className="text-xs line-clamp-1">{attachment.name}</p>
-                  {deletingId === attachment.id && (
+                  {getId === attachment.id && (
                     <div>
                       <Loader2 className="h-4 w-4 animate-spin" />
                     </div>
                   )}
 
-                  {deletingId !== attachment.id && (
+                  {getId !== attachment.id && (
                     <button
-                      onClick={() => onDelete(attachment.id)}
-                      className="ml-aut hover:opacity-75 transition"
+                      onClick={() => onAttachmentDelete(attachment.id)}
+                      className="ml-auto hover:opacity-75 transition"
                     >
                       <X className="h-4 w-4 " />
                     </button>
