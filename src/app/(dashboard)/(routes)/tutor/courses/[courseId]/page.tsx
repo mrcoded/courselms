@@ -1,77 +1,47 @@
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from "next/navigation";
 
-import { db } from "@/src/config/db";
-import { IconBadge } from "@/src/components/icon-badge";
-import {
-  CircleDollarSign,
-  File,
-  LayoutDashboard,
-  ListChecks,
-} from "lucide-react";
-import TitleForm from "./_components/title-form";
-import DescriptionForm from "./_components/description-form";
-import ImageForm from "./_components/image-form";
-import CategoryForm from "./_components/category-form";
-import PriceForm from "./_components/price-form";
-import AttachmentForm from "./_components/attachment-form";
-import ChaptersForm from "./_components/chapters-form";
-import Banner from "@/src/components/banner";
+import { getServerSession } from "@/lib/get-server-session";
+import { getCompletionStats } from "@/utils/get-completion-stats";
+
+import Banner from "@/components/banner";
 import CourseActions from "./_components/course-actions";
+import CourseFormsList from "./_components/course-forms-list";
+import { getOneCourse } from "@/services/get-one-course.service";
 
-const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
-  const userId = user?.id;
+const CourseIdPage = async ({
+  params,
+}: {
+  params: Promise<{ courseId: string }>;
+}) => {
+  const session = await getServerSession();
+  const userId = session?.user?.id;
 
+  // Await params
+  const { courseId } = await params;
+
+  // Redirect if not logged in
   if (!userId) {
     return redirect("/");
   }
 
-  const course = await db.course.findUnique({
-    where: {
-      id: params.courseId,
-      userId,
-    },
-    include: {
-      chapters: {
-        orderBy: {
-          position: "asc",
-        },
-      },
-      attachments: {
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
-    },
+  // Get course
+  const course = await getOneCourse({
+    courseId,
+    userId,
   });
 
-  const categories = await db.category.findMany({
-    orderBy: {
-      name: "asc",
-    },
-  });
+  // Redirect if course is not found
+  if (!course) redirect("/");
 
-  if (!course) {
-    return redirect("/");
-  }
-
-  const requiredFields = [
+  // Get completion stats
+  const { completionText, isCompleted } = getCompletionStats([
     course.title,
     course.description,
     course.imageUrl,
     course.price,
     course.categoryId,
     course.chapters.some((chapter) => chapter.isPublished),
-  ];
-
-  const totalFields = requiredFields.length;
-  const completedFields = requiredFields.filter(Boolean).length;
-
-  const completionText = `(${completedFields}/${totalFields})`;
-
-  const isCompleted = requiredFields.every(Boolean);
+  ]);
 
   return (
     <>
@@ -89,52 +59,15 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
               Complete all fields {completionText}
             </span>
           </div>
+
           <CourseActions
             disabled={!isCompleted}
-            courseId={params.courseId}
+            courseId={courseId}
             isPublished={course.isPublished}
           />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
-          <div>
-            <div className="flex items-center gap-x-2">
-              <IconBadge icon={LayoutDashboard} />
-              <h2 className="text-xl">Customize your course</h2>
-            </div>
-            <TitleForm initialData={course} courseId={course.id} />
-            <DescriptionForm initialData={course} courseId={course.id} />
-            <ImageForm initialData={course} courseId={course.id} />
-            <CategoryForm
-              initialData={course}
-              courseId={course.id}
-              options={categories.map((category) => ({
-                label: category.name,
-                value: category.id,
-              }))}
-            />
-          </div>
-          <div className="space-y-6">
-            <div className="flex items-center gap-x-2">
-              <IconBadge icon={ListChecks} />
-              <h2 className="text-xl">Course chapters</h2>
-            </div>
-            <ChaptersForm initialData={course} courseId={course.id} />
-            <div>
-              <div className="flex items-center gap-x-2">
-                <IconBadge icon={CircleDollarSign} />
-                <h2 className="text-xl">Sell your course</h2>
-              </div>
-              <PriceForm initialData={course} courseId={course.id} />
-            </div>
-            <div>
-              <div className="flex items-center gap-x-2">
-                <IconBadge icon={File} />
-                <h2 className="text-xl">Resources & Attachments</h2>
-              </div>
-              <AttachmentForm initialData={course} courseId={course.id} />
-            </div>
-          </div>
-        </div>
+
+        <CourseFormsList course={course} />
       </div>
     </>
   );
