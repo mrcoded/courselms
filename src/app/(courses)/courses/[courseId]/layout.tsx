@@ -1,53 +1,39 @@
 import React from "react";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from "next/navigation";
 
-import { db } from "@/src/config/db";
-import { getProgressActions } from "@/src/lib/actions/get-progress.actions";
-
-import CourseSidebar from "./_components/course-sidebar";
 import CourseNavbar from "./_components/course-navbar";
+import CourseSidebar from "./_components/course-sidebar";
+
+import { getServerSession } from "@/lib/get-server-session";
+import { getProgressActions } from "@/lib/actions/get-progress.actions";
+import { getOneCourseWithProgress } from "@/services/get-one-course.service";
 
 const CourseLayout = async ({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: { courseId: string };
+  params: Promise<{ courseId: string }>;
 }) => {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
+  const session = await getServerSession();
+  const user = session?.user;
   const userId = user?.id;
 
+  // Redirect if not logged in
   if (!userId) redirect("/");
 
-  const course = await db.course.findUnique({
-    where: {
-      id: params.courseId,
-    },
-    include: {
-      chapters: {
-        where: {
-          isPublished: true,
-        },
-        include: {
-          userProgress: {
-            where: {
-              userId,
-            },
-          },
-        },
-        orderBy: {
-          position: "asc",
-        },
-      },
-    },
-  });
+  // Get courseId from params
+  const { courseId } = await params;
 
+  // Get course with progress
+  const course = await getOneCourseWithProgress({ courseId, userId });
+
+  // Redirect if course not found
   if (!course) {
     return redirect("/");
   }
 
+  // Get progress total
   const progressCount = await getProgressActions(userId, course.id);
 
   return (

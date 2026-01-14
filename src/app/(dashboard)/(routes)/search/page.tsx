@@ -1,25 +1,27 @@
 import { Suspense } from "react";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from "next/navigation";
 
-import { db } from "@/src/config/db";
-import { getCourses } from "@/src/lib/actions/get-courses.actions";
+import { db } from "@/config/db";
+import { getCourses } from "@/lib/actions/get-courses.actions";
 
-import SearchInput from "@/src/components/search-input";
-import CoursesList from "@/src/components/courses-list";
+import SearchInput from "@/components/search-input";
+import CoursesList from "@/components/courses-list";
 
 import { Categories } from "./_components/categories";
+import { getServerSession } from "@/lib/get-server-session";
 
 interface SearchPageProps {
-  searchParams: {
+  searchParams: Promise<{
     title: string;
     categoryId: string;
-  };
+  }>;
 }
 const SearchPage = async ({ searchParams }: SearchPageProps) => {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
+  const session = await getServerSession();
+  const user = session?.user;
   const userId = user?.id;
+  //await
+  const resolvedSearchParams = await searchParams;
 
   if (!userId) redirect("/");
 
@@ -31,7 +33,7 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
 
   const courses = await getCourses({
     userId,
-    ...searchParams,
+    ...resolvedSearchParams,
   });
 
   return (

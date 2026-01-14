@@ -2,88 +2,45 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { z } from "zod";
-import { Chapter, Course } from "@prisma/client";
-import axios from "axios";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { cn } from "@/lib/utils";
 import { Loader2, PlusCircle } from "lucide-react";
-import { cn } from "@/src/lib/utils";
 
-import {
-  Form,
-  FormControl,
-  FormMessage,
-  FormField,
-  FormItem,
-} from "@/src/components/ui/form";
-import { Button } from "@/src/components/ui/button";
-import { toast } from "@/src/components/ui/use-toast";
-import { Input } from "@/src/components/ui/input";
+import axios from "axios";
+import { toast } from "sonner";
+
 import { ChaptersList } from "./chapters-list";
+import { Button } from "@/components/ui/button";
+import ChapterInputForm from "@/components/forms/chapter-input";
 
-interface ChaptersFormProps {
-  initialData: Course & { chapters: Chapter[] };
-  courseId: string;
-}
+import { useUpdatingStore } from "@/store/useUpdatingStore";
+import { ChaptersFormProps, TitleInputValues } from "@/types/input.types";
 
 const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
-  const [isCreating, setIsCreating] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
-
-  const toggleCreating = () => setIsCreating((prev) => !prev);
-
   const router = useRouter();
 
-  const formSchema = z.object({
-    title: z.string().min(1),
-  });
+  const [isCreating, setIsCreating] = useState(false);
 
-  const formMethods = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
-    },
-  });
+  // Handle chapter reorder boolean state
+  const isUpdating = useUpdatingStore((state) => state.isUpdating);
 
-  const { isSubmitting, isValid } = formMethods.formState;
+  // Toggle create mode
+  const toggleCreating = () => setIsCreating((prev) => !prev);
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  // Handle edit chapter
+  const onEdit = (id: string) => {
+    router.push(`/tutor/courses/${courseId}/chapters/${id}`);
+  };
+
+  // Handle form submission
+  const onSubmit = async (values: TitleInputValues) => {
     try {
       await axios.post(`/api/courses/${courseId}/chapters`, values);
-      toast({ title: "Success", description: "Chapter successfully created" });
+      toast.success("Success", { description: "Chapter successfully created" });
       toggleCreating();
       router.refresh();
     } catch {
-      toast({ title: "Error", description: "Something went wrong" });
+      toast.error("Error", { description: "Something went wrong" });
     }
-  };
-
-  const onReorder = async (updateData: { id: string; position: number }[]) => {
-    try {
-      setIsUpdating(true);
-
-      await axios.put(`/api/courses/${courseId}/chapters/reorders`, {
-        list: updateData,
-      });
-      toast({
-        title: "Success",
-        description: "Chapters re-ordered successfully",
-      });
-      router.refresh();
-    } catch {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Something went wrong",
-      });
-    } finally {
-      setIsUpdating(false);
-    }
-  };
-
-  const onEdit = (id: string) => {
-    router.push(`/tutor/courses/${courseId}/chapters/${id}`);
   };
 
   return (
@@ -108,52 +65,28 @@ const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
       </div>
 
       {isCreating && (
-        <Form {...formMethods}>
-          <form
-            onSubmit={formMethods.handleSubmit(onSubmit)}
-            className="space-y-4 mt-4"
+        <ChapterInputForm courseId={courseId} onSubmit={onSubmit} />
+      )}
+      {!isCreating && (
+        <>
+          <div
+            className={cn(
+              "text-sm mt-2",
+              !initialData?.chapters?.length && "text-slate-500 italic"
+            )}
           >
-            <FormField
-              control={formMethods.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      disabled={isSubmitting}
-                      placeholder="e.g 'Introduction to the course'"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                  <Button type="submit" disabled={!isValid || isSubmitting}>
-                    Create
-                  </Button>
-                </FormItem>
-              )}
+            {!initialData?.chapters?.length && "No chapters"}
+            <ChaptersList
+              onEdit={onEdit}
+              courseId={courseId}
+              items={initialData?.chapters || []}
             />
-          </form>
-        </Form>
-      )}
-      {!isCreating && (
-        <div
-          className={cn(
-            "text-sm mt-2",
-            !initialData.chapters.length && "text-slate-500 italic"
-          )}
-        >
-          {!initialData.chapters.length && "No chapters"}
-          <ChaptersList
-            onEdit={onEdit}
-            onReorder={onReorder}
-            items={initialData.chapters || []}
-          />
-        </div>
-      )}
-      {!isCreating && (
-        <p className="text-xs text-muted-foreground mt-4">
-          Drag and drop to re-order the chapters
-        </p>
+          </div>
+
+          <p className="text-xs text-muted-foreground mt-4">
+            Drag and drop to re-order the chapters
+          </p>
+        </>
       )}
     </div>
   );

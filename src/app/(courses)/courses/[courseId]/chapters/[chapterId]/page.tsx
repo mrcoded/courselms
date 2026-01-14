@@ -1,51 +1,51 @@
 import React from "react";
 import { redirect } from "next/navigation";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
-import { getChapter } from "@/src/lib/actions/get-chapter.actions";
-import Banner from "@/src/components/banner";
-import { Preview } from "@/src/components/preview";
+import { getServerSession } from "@/lib/get-server-session";
+import { getChapter } from "@/lib/actions/get-chapter.actions";
 
-import { Separator } from "@/src/components/ui/separator";
-
+import Banner from "@/components/banner";
+import { Preview } from "@/components/preview";
 import VideoPlayer from "./_components/video-player";
+import { Separator } from "@/components/ui/separator";
+import AttachmentLink from "./_components/attachment-link";
 import CourseEnrollButton from "./_components/course-enroll-button";
+import CourseProgressButton from "./_components/course-progress-button";
 
 const ChapterIdPage = async ({
   params,
 }: {
-  params: { courseId: string; chapterId: string };
+  params: Promise<{ courseId: string; chapterId: string }>;
 }) => {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
+  const session = await getServerSession();
+  const user = session?.user;
   const userId = user?.id;
 
+  //redirect if not logged in
   if (!userId) redirect("/");
 
-  const {
-    chapter,
-    course,
-    muxData,
-    attachments,
-    nextChapter,
-    userProgress,
-    purchase,
-  } = await getChapter({
+  //get course id and chapter id from params
+  const { courseId, chapterId } = await params;
+
+  //get chapter datas
+  const data = await getChapter({
     userId,
-    chapterId: params.chapterId,
-    courseId: params.courseId,
+    chapterId: chapterId,
+    courseId: courseId,
   });
 
-  if (!chapter || !course) {
+  //if chapter or course not found
+  if (!data.chapter || !data.course) {
     return redirect("/");
   }
 
-  const isLocked = !chapter.isFree && !purchase;
-  const completeOnEnd = !!purchase && !userProgress?.isCompleted;
+  //
+  const isLocked = !data.chapter.isFree && !data.purchase;
+  const completeOnEnd = !!data.purchase && !data.userProgress?.isCompleted;
 
   return (
     <div>
-      {userProgress?.isCompleted && (
+      {data.userProgress?.isCompleted && (
         <Banner variant="success" label="You already completed this chapter." />
       )}
       {isLocked && (
@@ -57,44 +57,46 @@ const ChapterIdPage = async ({
       <div className="flex flex-col max-w-4xl mx-auto pb-20">
         <div className="p-4">
           <VideoPlayer
-            chapterId={params.chapterId}
-            title={chapter.title}
-            courseId={params.courseId}
-            nextChapterId={nextChapter?.id}
-            playbackId={muxData?.playbackId!}
+            chapterId={chapterId}
+            title={data.chapter.title}
+            courseId={courseId}
+            nextChapterId={data.nextChapter?.id}
+            playbackId={data.muxData?.playbackId!}
             isLocked={isLocked}
             completeOnEnd={completeOnEnd}
           />
         </div>
+
         <div>
           <div className="p-4 flex flex-col md:flex-row items-center justify-between">
-            <h2 className="text-2xl font-semibold mb-2">{chapter.title}</h2>
-            {purchase ? (
-              <div></div>
+            <h2 className="text-2xl font-semibold mb-2">
+              {data.chapter.title}
+            </h2>
+            {data.purchase ? (
+              <CourseProgressButton
+                chapterId={chapterId}
+                courseId={courseId}
+                nextChapterId={data.nextChapter?.id}
+                isCompleted={!!data.userProgress?.isCompleted}
+              />
             ) : (
               <CourseEnrollButton
-                courseId={params.courseId}
-                price={course.price!}
+                courseId={courseId}
+                price={data.course.price!}
               />
             )}
           </div>
+
           <Separator />
           <div>
-            <Preview value={chapter.description!} />
+            <Preview value={data.chapter.description!} />
           </div>
-          {!!attachments.length && (
+          {!!data.attachments.length && (
             <>
               <Separator />
               <div className="p-4">
-                {attachments.map((attachment) => (
-                  <a
-                    href={attachment.url}
-                    target="_blank"
-                    key={attachment.id}
-                    className="flex items-center p-3 w-full bg-sky-200 border text-sky-700 rounded-md hover:underline"
-                  >
-                    <p className="line-clamp-1">{attachment.name}</p>
-                  </a>
+                {data.attachments.map((attachment) => (
+                  <AttachmentLink attachment={attachment} />
                 ))}
               </div>
             </>
