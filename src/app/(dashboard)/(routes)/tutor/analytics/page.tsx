@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "@/lib/get-server-session";
 import { getAnalytics } from "@/lib/actions/get-analytics.actions";
 
-import Charts from "./_components/charts";
+import AnalyticsCharts from "./_components/analytics-charts";
 import AnalyticsDataCard from "./_components/analytics-data-card";
 
 const AnalyticsPage = async () => {
@@ -30,7 +30,7 @@ const AnalyticsPage = async () => {
       </div>
 
       {/* // Analytics Charts */}
-      <Charts data={data} />
+      <AnalyticsCharts data={data} />
     </div>
   );
 };

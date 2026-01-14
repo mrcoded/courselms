@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "@/lib/get-server-session";
 import { getDashboardCourses } from "@/lib/actions/get-dashboard-courses";
 
-import InfoCard from "./_components/info-card";
+import InfoCard from "./_components/dashboard-info-card";
 import CoursesList from "@/components/courses-list";
 
 const Dashboard = async () => {

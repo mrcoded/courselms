@@ -7,7 +7,7 @@ import { AnalyticsChartsProps } from "@/types/dashboard.types";
 
 import { BarChart, XAxis, ResponsiveContainer, YAxis, Bar } from "recharts";
 
-const Charts = ({ data }: AnalyticsChartsProps) => {
+const AnalyticsCharts = ({ data }: AnalyticsChartsProps) => {
   return (
     <Card>
       <ResponsiveContainer width="100%" height={400}>
@@ -33,4 +33,4 @@ const Charts = ({ data }: AnalyticsChartsProps) => {
   );
 };
 
-export default Charts;
+export default AnalyticsCharts;
