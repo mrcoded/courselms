@@ -1,0 +1,36 @@
+"use client";
+
+import React from "react";
+import { Card } from "@/components/ui/card";
+
+import { AnalyticsChartsProps } from "@/types/dashboard.types";
+
+import { BarChart, XAxis, ResponsiveContainer, YAxis, Bar } from "recharts";
+
+const Charts = ({ data }: AnalyticsChartsProps) => {
+  return (
+    <Card>
+      <ResponsiveContainer width="100%" height={400}>
+        <BarChart data={data}>
+          <XAxis
+            dataKey="name"
+            stroke="#888888"
+            fontSize={12}
+            tickLine={false}
+            axisLine={false}
+          />
+          <YAxis
+            stroke="#888888"
+            fontSize={12}
+            tickLine={false}
+            axisLine={false}
+            tickFormatter={(value) => `${value}`}
+          />
+          <Bar dataKey="total" fill="#0369a1" radius={[4, 4, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </Card>
+  );
+};
+
+export default Charts;
