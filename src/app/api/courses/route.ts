@@ -1,7 +1,9 @@
-import { db } from "@/config/db";
-import { getServerSession } from "@/lib/get-server-session";
-
 import { NextResponse } from "next/server";
+
+import { db } from "@/config/db";
+
+import { isTutor } from "@/lib/get-tutor";
+import { getServerSession } from "@/lib/get-server-session";
 
 export async function POST(req: Request) {
   try {
@@ -13,8 +15,8 @@ export async function POST(req: Request) {
     // Get request body
     const { title } = await req.json();
 
-    //if user is not logged in
-    if (!userId) {
+    //if user is not logged in or is tutor
+    if (!userId || isTutor(userId)) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
