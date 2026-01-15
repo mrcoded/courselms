@@ -15,5 +15,12 @@ export const Preview = ({ value }: PreviewProps) => {
     []
   );
 
-  return <ReactQuill theme="bubble" value={value} readOnly />;
+  return (
+    <div>
+      <h1 className="text-center mt-2 font-semibold text-sm sm:text-base">
+        Chapter Description
+      </h1>
+      <ReactQuill theme="bubble" value={value} readOnly />
+    </div>
+  );
 };

@@ -22,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} w-full max-w-screen-2xl mx-auto`}>
         <Suspense fallback={<Loading />}>
           <ConfettiProvider />
           <ToastProvider />

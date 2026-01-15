@@ -30,6 +30,7 @@ const CourseCard = ({
             src={imageUrl}
             decoding="async"
             priority
+            unoptimized
           />
         </div>
 

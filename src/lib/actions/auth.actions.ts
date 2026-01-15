@@ -7,22 +7,11 @@ import { LoginAuthFormValues, RegisterAuthFormValues } from "@/types/auth";
 
 export async function registerUserFn(
   formData: RegisterAuthFormValues
-): Promise<RegisterAuthFormValues> {
+): Promise<{ message: string; success: boolean }> {
   //destructure data
   const { email, password, name, role } = formData;
-
+  console.log(role);
   try {
-    //register user with betterAuth
-    await auth.api.signUpEmail({
-      body: {
-        email,
-        name,
-        role,
-        password,
-      },
-      asResponse: true,
-    });
-
     //check if user already exists in the db
     const existingUser = await db.user.findUnique({
       where: { email },
@@ -35,13 +24,15 @@ export async function registerUserFn(
       };
     }
 
-    //Create new user tot the db
-    await db.user.create({
-      data: {
-        name,
+    //register user with betterAuth
+    await auth.api.signUpEmail({
+      body: {
         email,
+        name,
         role,
+        password,
       },
+      asResponse: true,
     });
 
     return {

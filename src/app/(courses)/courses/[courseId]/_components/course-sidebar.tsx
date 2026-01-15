@@ -22,8 +22,8 @@ const CourseSidebar = async ({ course, progressCount }: CourseSidebarProps) => {
 
   return (
     <div className="h-full border-r flex flex-col overflow-y-auto shadow-sm">
-      <div className="p-8 flex flex-col border-b">
-        <h1 className="font-semibold">{course.title}</h1>
+      <div className="p-5 sm:p-7 flex flex-col border-b">
+        <h1 className="font-semibold capitalize">{course.title}</h1>
         {purchase && (
           <div className="mt-10">
             <CourseProgress variant="success" value={progressCount} />

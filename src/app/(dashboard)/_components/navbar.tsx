@@ -1,12 +1,14 @@
-import React from "react";
+import React, { Suspense } from "react";
 import MobileSidebar from "./mobile-sidebar";
 import NavbarRoutes from "@/components/shared/navbar-routes";
 
 const Navbar = () => {
   return (
-    <div className="p-4 border-b h-full flex items-center bg-white shadow-sm">
+    <div className="p-4 border-b h-full w-full flex items-center bg-white shadow-sm">
       <MobileSidebar />
-      <NavbarRoutes />
+      <Suspense>
+        <NavbarRoutes />
+      </Suspense>
     </div>
   );
 };
