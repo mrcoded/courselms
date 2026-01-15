@@ -4,8 +4,8 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { DescriptionFormProps } from "@/types/input.types";
-import { descriptionInputSchema } from "@/validators/input-field";
+import { DescriptionFormProps } from "@/types/form.types";
+import { descriptionInputSchema } from "@/validators/form-input-field";
 
 import {
   Form,

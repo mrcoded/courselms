@@ -1,23 +1,18 @@
-import { db } from "@/src/config/db";
 import { redirect } from "next/navigation";
+import { getOnePublishedCourse } from "@/lib/actions/get-one-course.actions";
 
-const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
-  const course = await db.course.findUnique({
-    where: {
-      id: params.courseId,
-    },
-    include: {
-      chapters: {
-        where: {
-          isPublished: true,
-        },
-        orderBy: {
-          position: "asc",
-        },
-      },
-    },
-  });
+const CourseIdPage = async ({
+  params,
+}: {
+  params: Promise<{ courseId: string }>;
+}) => {
+  //get course id from params
+  const { courseId } = await params;
 
+  //get course
+  const course = await getOnePublishedCourse({ courseId });
+
+  // Redirect if course not found
   if (!course) redirect("/");
 
   return redirect(`/courses/${course.id}/chapters/${course.chapters[0].id}`);

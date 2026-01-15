@@ -6,7 +6,7 @@ import CourseSidebar from "./_components/course-sidebar";
 
 import { getServerSession } from "@/lib/get-server-session";
 import { getProgressActions } from "@/lib/actions/get-progress.actions";
-import { getOneCourseWithProgress } from "@/services/get-one-course.service";
+import { getOneCourseWithProgress } from "@/lib/actions/get-one-course.actions";
 
 const CourseLayout = async ({
   children,

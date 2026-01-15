@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import ChapterDND from "./chapter-dnd";
 
-import { ChaptersListProps } from "@/types/input.types";
+import { ChaptersListProps } from "@/types/form.types";
 
 import useChapterDND from "@/hooks/use-chapter-dnd";
 import { useChapterStore } from "@/store/useChapterStore";

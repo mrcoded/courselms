@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
-import { db } from "@/config/db";
 
 import { columns } from "./_components/columns";
 import { TutorTable } from "./_components/tutor-table";
 
 import { getServerSession } from "@/lib/get-server-session";
+import { getCoursesForTutor } from "@/lib/actions/get-courses.actions";
 
 const CoursesPage = async () => {
   const session = await getServerSession();
@@ -12,18 +12,13 @@ const CoursesPage = async () => {
   const user = session?.user;
   const userId = user?.id;
 
+  //If user is nt found
   if (!userId) {
     return redirect("/");
   }
 
-  const courses = await db.course.findMany({
-    where: {
-      userId,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  //get courses
+  const courses = await getCoursesForTutor(userId);
 
   return (
     <div className="p-6">

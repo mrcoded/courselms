@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { Category } from "@prisma/client";
 import {
   FcEngineering,
@@ -11,12 +12,9 @@ import {
   FcOldTimeCamera,
 } from "react-icons/fc";
 import { IconType } from "react-icons/lib";
-import CategoryItem from "./category-item";
-import { Suspense } from "react";
 
-interface CategoriesProps {
-  items: Category[];
-}
+import CategoryItem from "./category-item";
+import { CategoriesProps } from "@/types/dashboard.types";
 
 const IconMap: Record<Category["name"], IconType> = {
   Music: FcMusic,

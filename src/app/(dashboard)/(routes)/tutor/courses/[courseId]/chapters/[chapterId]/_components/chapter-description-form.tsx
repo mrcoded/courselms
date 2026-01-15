@@ -15,7 +15,7 @@ import DescriptionInputForm from "@/components/forms/description-input";
 import {
   DescriptionFormProps,
   DescriptionInputValues,
-} from "@/types/input.types";
+} from "@/types/form.types";
 
 const ChapterDescriptionForm = ({
   initialData,

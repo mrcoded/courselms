@@ -3,13 +3,7 @@
 import qs from "query-string";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { IconType } from "react-icons/lib";
-
-interface CategoryItemProps {
-  label: string;
-  icon: IconType;
-  value: string;
-}
+import { CategoryItemProps } from "@/types/dashboard.types";
 
 const CategoryItem = ({ label, value, icon: Icon }: CategoryItemProps) => {
   const router = useRouter();
@@ -21,6 +15,7 @@ const CategoryItem = ({ label, value, icon: Icon }: CategoryItemProps) => {
 
   const isSelected = currentCategoryId === value;
 
+  // handle click
   const onClick = () => {
     const url = qs.stringifyUrl(
       {

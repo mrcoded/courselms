@@ -106,5 +106,4 @@ export const getChapter = async ({
       purchase: null,
     };
   }
-  // return ()
 };

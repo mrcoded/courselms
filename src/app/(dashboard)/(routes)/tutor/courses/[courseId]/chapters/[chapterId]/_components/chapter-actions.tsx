@@ -5,7 +5,7 @@ import { Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ConfirmModal } from "@/components/modals/confirm-modal";
 
-import { ChapterActionsProps } from "@/types/input.types";
+import { ChapterActionsProps } from "@/types/form.types";
 
 import { useUpdatingStore } from "@/store/useUpdatingStore";
 

@@ -4,11 +4,11 @@ import { ArrowLeft } from "lucide-react";
 
 import { getServerSession } from "@/lib/get-server-session";
 import { getCompletionStats } from "@/utils/get-completion-stats";
-import { getOneChapter } from "@/services/get-one-chapter.service";
+import { getOneChapter } from "@/lib/actions/get-one-chapter.actions";
 
 import Banner from "@/components/banner";
-import ChapterFormsList from "./_components/chapter-forms-list";
 import ChapterActions from "./_components/chapter-actions";
+import ChapterFormsList from "./_components/chapter-forms-list";
 
 const ChapterIdPage = async ({
   params,

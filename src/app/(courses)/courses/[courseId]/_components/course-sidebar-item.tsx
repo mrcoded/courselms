@@ -1,16 +1,10 @@
 "use client";
 
-import { cn } from "@/src/lib/utils";
-import { CheckCircle, Lock, PlayCircle } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
-interface CourseSidebarItemProps {
-  label: string;
-  id: string;
-  isCompleted: boolean;
-  courseId: string;
-  isLocked: boolean;
-}
+import { cn } from "@/lib/utils";
+import { CheckCircle, Lock, PlayCircle } from "lucide-react";
+import { CourseSidebarItemProps } from "@/types/course.types";
 
 const CourseSidebarItem = ({
   label,

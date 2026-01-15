@@ -11,7 +11,7 @@ import MuxPlayer from "@mux/mux-player-react";
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/file-upload";
 
-import { ChapterVideoFormProps, VideoInputValues } from "@/types/input.types";
+import { ChapterVideoFormProps, VideoInputValues } from "@/types/form.types";
 
 const ChapterVideoForm = ({
   initialData,

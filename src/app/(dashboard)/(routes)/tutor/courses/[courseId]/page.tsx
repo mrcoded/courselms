@@ -1,12 +1,13 @@
 import { redirect } from "next/navigation";
 
 import { getServerSession } from "@/lib/get-server-session";
+import { getOneCourse } from "@/lib/actions/get-one-course.actions";
+
 import { getCompletionStats } from "@/utils/get-completion-stats";
 
 import Banner from "@/components/banner";
 import CourseActions from "./_components/course-actions";
 import CourseFormsList from "./_components/course-forms-list";
-import { getOneCourse } from "@/services/get-one-course.service";
 
 const CourseIdPage = async ({
   params,
@@ -16,7 +17,7 @@ const CourseIdPage = async ({
   const session = await getServerSession();
   const userId = session?.user?.id;
 
-  // Await params
+  // get courseid from params
   const { courseId } = await params;
 
   // Redirect if not logged in

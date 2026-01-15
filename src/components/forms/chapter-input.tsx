@@ -13,8 +13,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { titleInputSchema } from "@/validators/input-field";
-import { ChaptersFormProps, TitleInputValues } from "@/types/input.types";
+import { titleInputSchema } from "@/validators/form-input-field";
+import { ChaptersFormProps, TitleInputValues } from "@/types/form.types";
 
 const ChapterInputForm = ({ onSubmit }: ChaptersFormProps) => {
   // Initialize form methods

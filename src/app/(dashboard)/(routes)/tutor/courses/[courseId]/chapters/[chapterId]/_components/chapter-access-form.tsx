@@ -11,10 +11,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import AccessSelectForm from "@/components/forms/access-select";
 
-import {
-  AccessSelectValues,
-  ChapterAccessFormProps,
-} from "@/types/input.types";
+import { AccessSelectValues, ChapterAccessFormProps } from "@/types/form.types";
 
 const ChapterAccessForm = ({
   initialData,

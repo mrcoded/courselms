@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
 
-import { CategoryFormProps, CategoryInputValues } from "@/types/input.types";
+import { CategoryFormProps, CategoryInputValues } from "@/types/form.types";
 
 import { Button } from "@/components/ui/button";
 import CategoryInputForm from "@/components/forms/category-input";

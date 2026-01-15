@@ -16,7 +16,7 @@ import AttachmentForm from "./attachment-form";
 import DescriptionForm from "./description-form";
 import { IconBadge } from "@/components/icon-badge";
 
-import { getAllCategories } from "@/services/get-all-categories";
+import { getAllCategories } from "@/lib/actions/get-all-categories";
 
 const CourseFormsList = async ({ course }: { course: Course }) => {
   //get all categories

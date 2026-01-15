@@ -1,17 +1,9 @@
-import { Chapter, Course, UserProgress } from "@prisma/client";
 import { Menu } from "lucide-react";
 
-import { Sheet, SheetContent, SheetTrigger } from "@/src/components/ui/sheet";
 import CourseSidebar from "./course-sidebar";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
-interface CourseMobileSidebarProps {
-  course: Course & {
-    chapters: (Chapter & {
-      userProgress: UserProgress[] | null;
-    })[];
-  };
-  progressCount: number;
-}
+import { CourseMobileSidebarProps } from "@/types/course.types";
 
 const CourseMobileSidebar = ({
   course,

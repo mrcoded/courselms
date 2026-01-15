@@ -13,8 +13,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
 
-import { categoryInputSchema } from "@/validators/input-field";
-import { CategoryFormProps, CategoryInputValues } from "@/types/input.types";
+import { categoryInputSchema } from "@/validators/form-input-field";
+import { CategoryFormProps, CategoryInputValues } from "@/types/form.types";
 
 const CategoryInputForm = ({
   options,

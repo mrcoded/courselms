@@ -13,8 +13,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { priceInputSchema } from "@/validators/input-field";
-import { PriceFormProps, PriceInputValues } from "@/types/input.types";
+import { priceInputSchema } from "@/validators/form-input-field";
+import { PriceFormProps, PriceInputValues } from "@/types/form.types";
 
 const PriceInputForm = ({ initialData, onSubmit }: PriceFormProps) => {
   // Initialize form methods

@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import TitleInputForm from "@/components/forms/title-input-form";
 
-import { TitleFormProps, TitleInputValues } from "@/types/input.types";
+import { TitleFormProps, TitleInputValues } from "@/types/form.types";
 
 const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
   const router = useRouter();

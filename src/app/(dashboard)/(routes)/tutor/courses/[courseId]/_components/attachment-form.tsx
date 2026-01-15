@@ -9,10 +9,7 @@ import { toast } from "sonner";
 
 import { useGetIdStore } from "@/store/useIdStore";
 
-import {
-  AttachmentFormProps,
-  AttachmentInputValues,
-} from "@/types/input.types";
+import { AttachmentFormProps, AttachmentInputValues } from "@/types/form.types";
 
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/file-upload";

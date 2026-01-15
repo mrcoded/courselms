@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import ChapterInputForm from "@/components/forms/chapter-input";
 
 import { useUpdatingStore } from "@/store/useUpdatingStore";
-import { ChaptersFormProps, TitleInputValues } from "@/types/input.types";
+import { ChaptersFormProps, TitleInputValues } from "@/types/form.types";
 
 const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
   const router = useRouter();

@@ -1,37 +1,25 @@
 import React from "react";
 import { redirect } from "next/navigation";
 
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { Chapter, Course, UserProgress } from "@prisma/client";
-import { db } from "@/lib/db";
+import { getServerSession } from "@/lib/get-server-session";
 
 import CourseSidebarItem from "./course-sidebar-item";
-import CourseProgress from "@/src/components/course-progress";
+import CourseProgress from "@/components/course-progress";
 
-interface CourseSidebarProps {
-  course: Course & {
-    chapters: (Chapter & {
-      userProgress: UserProgress[] | null;
-    })[];
-  };
-  progressCount: number;
-}
+import { CourseSidebarProps } from "@/types/course.types";
+import { getPurchase } from "@/lib/actions/get-purchase.actions";
 
 const CourseSidebar = async ({ course, progressCount }: CourseSidebarProps) => {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
+  const session = await getServerSession();
+  const user = session?.user;
   const userId = user?.id;
 
+  // Redirect if not logged in
   if (!userId) redirect("/");
 
-  const purchase = await db.purchase.findUnique({
-    where: {
-      userId_courseId: {
-        userId,
-        courseId: course?.id,
-      },
-    },
-  });
+  // Get purchase
+  const purchase = await getPurchase({ userId, course });
+
   return (
     <div className="h-full border-r flex flex-col overflow-y-auto shadow-sm">
       <div className="p-8 flex flex-col border-b">

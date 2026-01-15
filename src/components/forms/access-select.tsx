@@ -14,11 +14,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
-import {
-  AccessSelectValues,
-  ChapterAccessFormProps,
-} from "@/types/input.types";
-import { accessSelectSchema } from "@/validators/input-field";
+import { AccessSelectValues, ChapterAccessFormProps } from "@/types/form.types";
+import { accessSelectSchema } from "@/validators/form-input-field";
 
 const AccessSelectForm = ({
   onSubmit,

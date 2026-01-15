@@ -9,7 +9,7 @@ import axios from "axios";
 import { toast } from "sonner";
 
 import { formatPrice } from "@/lib/formatPrice";
-import { PriceFormProps, PriceInputValues } from "@/types/input.types";
+import { PriceFormProps, PriceInputValues } from "@/types/form.types";
 
 import { Button } from "@/components/ui/button";
 import PriceInputForm from "@/components/forms/price-input";

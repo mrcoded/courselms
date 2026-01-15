@@ -7,7 +7,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { Pencil } from "lucide-react";
 
-import { TitleFormProps, TitleInputValues } from "@/types/input.types";
+import { TitleFormProps, TitleInputValues } from "@/types/form.types";
 
 import { Button } from "@/components/ui/button";
 import TitleInputForm from "@/components/forms/title-input-form";

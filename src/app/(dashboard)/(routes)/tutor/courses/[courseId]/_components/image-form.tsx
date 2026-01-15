@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { FileUpload } from "@/components/file-upload";
 
-import { ImageFormProps } from "@/types/input.types";
+import { ImageFormProps } from "@/types/form.types";
 
 const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
   const router = useRouter();
