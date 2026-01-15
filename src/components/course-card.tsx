@@ -1,21 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-
-import { IconBadge } from "@/src/components/icon-badge";
+import Image from "next/image";
 import { BookOpen } from "lucide-react";
-import { formatPrice } from "@/src/lib/formatPrice";
 
-interface CourseCardProps {
-  id: string;
-  title: string;
-  imageUrl: string;
-  chaptersLength: number;
-  price: number;
-  progress: number | null;
-  category: string;
-}
+import { formatPrice } from "@/lib/formatPrice";
+import { CourseCardProps } from "@/types/course.types";
+
+import { IconBadge } from "@/components/icon-badge";
+import CourseProgress from "@/components/course-progress";
 
 const CourseCard = ({
   id,
@@ -30,8 +23,16 @@ const CourseCard = ({
     <Link href={`/courses/${id}`}>
       <div className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 h-full">
         <div className="relative w-full aspect-video rounded-md overflow-hidden">
-          <Image fill className="object-cover" alt={title} src={imageUrl} />
+          <Image
+            fill
+            className="object-cover"
+            alt={title}
+            src={imageUrl}
+            decoding="async"
+            priority
+          />
         </div>
+
         <div className="flex flex-col pt-2">
           <div className="text-lg md:text-base font-medium group-hover:text-sky-700 transition line-clamp-2">
             {title}
@@ -45,8 +46,13 @@ const CourseCard = ({
               </span>
             </div>
           </div>
+
           {progress !== null ? (
-            <div>TODO</div>
+            <CourseProgress
+              size="sm"
+              value={progress}
+              variant={progress === 100 ? "success" : "default"}
+            />
           ) : (
             <p className="text-md md:text-sm font-medium text-slate-700">
               {formatPrice(price)}
