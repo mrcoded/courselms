@@ -1,6 +1,8 @@
-import { betterAuth } from "better-auth";
-import { prismaAdapter } from "better-auth/adapters/prisma";
 import { PrismaClient } from "@prisma/client";
+
+import { betterAuth } from "better-auth";
+import { nextCookies } from "better-auth/next-js";
+import { prismaAdapter } from "better-auth/adapters/prisma";
 
 const prisma = new PrismaClient();
 export const auth = betterAuth({
@@ -22,10 +24,15 @@ export const auth = betterAuth({
     },
   },
   session: {
+    expiresIn: 60 * 60 * 24 * 7, // 7 days
+    updateAge: 60 * 60 * 24, // 24 hours
     cookieCache: {
       enabled: true,
       maxAge: 5 * 60,
-      strategy: "compact",
     },
   },
+  advanced: {
+    useSecureCookies: process.env.NODE_ENV === "production",
+  },
+  plugins: [nextCookies()],
 });
