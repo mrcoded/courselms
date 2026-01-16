@@ -2,7 +2,9 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Loader2, Lock } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 import axios from "axios";
 import { toast } from "sonner";
@@ -75,6 +77,7 @@ const VideoPlayer = ({
             )}
             playbackId={playbackId}
             onCanPlay={() => setIsReady(true)}
+            onEnded={onEnd}
             onEnded={onEnd}
             autoPlay
           />

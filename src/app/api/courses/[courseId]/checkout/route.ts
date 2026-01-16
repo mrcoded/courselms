@@ -39,7 +39,6 @@ export async function POST(
         },
       },
     });
-    console.log(purchase);
 
     //if purchase already exists
     if (purchase) {
