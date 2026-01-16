@@ -64,9 +64,7 @@ const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
         </Button>
       </div>
 
-      {isCreating && (
-        <ChapterInputForm courseId={courseId} onSubmit={onSubmit} />
-      )}
+      {isCreating && <ChapterInputForm onSubmit={onSubmit} />}
       {!isCreating && (
         <>
           <div

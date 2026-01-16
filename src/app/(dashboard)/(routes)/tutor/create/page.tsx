@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "sonner";
 
-import TitleForm from "@/components/forms/title-input-form";
+import TitleInputForm from "@/components/forms/title-input-form";
 
 import { TitleInputValues } from "@/types/form.types";
 
@@ -34,7 +34,7 @@ const CreateCoursePage = () => {
           change this later.
         </p>
         {/* Title Form */}
-        <TitleForm onSubmit={onSubmit} />
+        <TitleInputForm onSubmit={onSubmit} />
       </div>
     </div>
   );

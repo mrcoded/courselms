@@ -14,13 +14,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
-import { AccessSelectValues, ChapterAccessFormProps } from "@/types/form.types";
+import {
+  AccessSelectValues,
+  ChapterInputAccessFormProps,
+} from "@/types/form.types";
 import { accessSelectSchema } from "@/validators/form-input-field";
 
 const AccessSelectForm = ({
   onSubmit,
   initialData,
-}: ChapterAccessFormProps) => {
+}: ChapterInputAccessFormProps) => {
   // Initialize form methods
   const formMethods = useForm<AccessSelectValues>({
     resolver: zodResolver(accessSelectSchema),

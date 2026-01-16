@@ -72,7 +72,6 @@ const CategoryForm = ({
           initialData={initialData}
           onSubmit={onSubmit}
           options={options}
-          courseId={courseId}
         />
       )}
     </div>

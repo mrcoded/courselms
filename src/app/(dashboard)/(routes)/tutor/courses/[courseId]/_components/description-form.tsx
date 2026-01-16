@@ -63,7 +63,7 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
 
       {isEditing && (
         <DescriptionInputForm
-          courseId={courseId}
+          isEditing={isEditing}
           onSubmit={onSubmit}
           initialData={initialData}
         />

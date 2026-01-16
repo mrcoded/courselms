@@ -14,9 +14,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { priceInputSchema } from "@/validators/form-input-field";
-import { PriceFormProps, PriceInputValues } from "@/types/form.types";
+import { PriceInputFormProps, PriceInputValues } from "@/types/form.types";
 
-const PriceInputForm = ({ initialData, onSubmit }: PriceFormProps) => {
+const PriceInputForm = ({ initialData, onSubmit }: PriceInputFormProps) => {
   // Initialize form methods
   const formMethods = useForm<PriceInputValues>({
     resolver: zodResolver(priceInputSchema),

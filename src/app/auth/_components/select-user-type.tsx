@@ -74,7 +74,7 @@ export const UserTypeSelector = ({
 
         <p className="mt-4 text-xs text-center text-muted-foreground">
           You are continuing as:{" "}
-          <span className="font-bold text-primary">{role}</span>
+          <span className="font-bold text-primary capitalize">{role}</span>
         </p>
 
         <Button

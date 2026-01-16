@@ -4,7 +4,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { DescriptionFormProps } from "@/types/form.types";
+import { DescriptionInputFormProps } from "@/types/form.types";
 import { descriptionInputSchema } from "@/validators/form-input-field";
 
 import {
@@ -22,7 +22,7 @@ const DescriptionInputForm = ({
   onSubmit,
   isEditing,
   initialData,
-}: DescriptionFormProps) => {
+}: DescriptionInputFormProps) => {
   // Initialize form methods
   const formMethods = useForm<z.infer<typeof descriptionInputSchema>>({
     resolver: zodResolver(descriptionInputSchema),

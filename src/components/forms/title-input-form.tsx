@@ -17,19 +17,19 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { titleInputSchema } from "@/validators/form-input-field";
-import { TitleFormProps, TitleInputValues } from "@/types/form.types";
+import { TitleInputFormProps, TitleInputValues } from "@/types/form.types";
 
 const TitleInputForm = ({
   onSubmit,
   isEditing,
   initialData,
-}: TitleFormProps) => {
+}: TitleInputFormProps) => {
   const router = useRouter();
 
   // Initialize form methods
   const formMethods = useForm<TitleInputValues>({
     resolver: zodResolver(titleInputSchema),
-    defaultValues: initialData,
+    defaultValues: initialData ?? { title: "" },
   });
 
   // Destructure form state

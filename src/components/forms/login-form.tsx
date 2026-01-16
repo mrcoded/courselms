@@ -13,8 +13,8 @@ import { LoginAuthSchema } from "@/validators/auth-validator";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import AuthButton from "@/components/ui/Button/AuthButton";
 import PasswordVisibility from "@/components/password-visibility";
 
 export const LoginForm = () => {
@@ -93,9 +93,11 @@ export const LoginForm = () => {
             <Checkbox id="remember" />
             <Label htmlFor="remember">Remember me</Label>
           </div>
-          <Button type="submit" isLoading={isPending}>
-            {isPending ? "Logging in..." : "Login"}
-          </Button>
+          <AuthButton
+            isPending={isPending}
+            btnPending="Logging in..."
+            btnLabel="Login"
+          />
         </div>
         <p className="text-xs">
           Don't have an account?{" "}

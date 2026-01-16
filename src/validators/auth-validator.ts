@@ -12,6 +12,7 @@ export const RegisterAuthSchema = z.object({
     .min(6, { message: "Password must be at least 6 characters long." })
     .max(50, { message: "Password cannot exceed 50 characters." })
     .regex(/[0-9]/, { message: "Password requires at least one number." }),
+  role: z.enum(["student", "tutor"]),
 });
 
 export const LoginAuthSchema = z.object({

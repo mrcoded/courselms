@@ -14,9 +14,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { titleInputSchema } from "@/validators/form-input-field";
-import { ChaptersFormProps, TitleInputValues } from "@/types/form.types";
+import { ChaptersInputFormProps, TitleInputValues } from "@/types/form.types";
 
-const ChapterInputForm = ({ onSubmit }: ChaptersFormProps) => {
+const ChapterInputForm = ({ onSubmit }: ChaptersInputFormProps) => {
   // Initialize form methods
   const formMethods = useForm<TitleInputValues>({
     resolver: zodResolver(titleInputSchema),

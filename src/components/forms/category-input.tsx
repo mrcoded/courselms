@@ -14,13 +14,16 @@ import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
 
 import { categoryInputSchema } from "@/validators/form-input-field";
-import { CategoryFormProps, CategoryInputValues } from "@/types/form.types";
+import {
+  CategoryInputFormProps,
+  CategoryInputValues,
+} from "@/types/form.types";
 
 const CategoryInputForm = ({
   options,
   onSubmit,
   initialData,
-}: CategoryFormProps) => {
+}: CategoryInputFormProps) => {
   // Initialize form methods
   const formMethods = useForm<CategoryInputValues>({
     resolver: zodResolver(categoryInputSchema),
