@@ -100,7 +100,7 @@ export const LoginForm = () => {
           />
         </div>
         <p className="text-xs">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
             href="/auth/register"
             className="hover:underline font-medium text-sm"
