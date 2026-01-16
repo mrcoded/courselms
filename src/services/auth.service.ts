@@ -2,38 +2,39 @@
 
 import { useRouter } from "next/navigation";
 
+import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 
-import { useToast } from "@/components/ui/use-toast";
+import { LoginAuthFormValues, RegisterAuthFormValues } from "@/types/auth";
 
 import { authClient } from "@/config/auth-client";
 import { loginUserFn, registerUserFn } from "@/lib/actions/auth.actions";
 
 export function RegisterService() {
   const router = useRouter();
-  const { toast } = useToast();
 
   //RegisterUser function handler
   const { mutate: registerUser, isPending } = useMutation({
-    mutationFn: registerUserFn,
+    mutationFn: async (data: RegisterAuthFormValues) =>
+      await registerUserFn(data),
     onSuccess: (data) => {
       if (data?.success) {
-        toast({
-          title: "Success",
-          description: `${data.message}`,
-          variant: "default",
-        });
+        toast.success("Success", { description: `${data.message}` });
 
         //redirect to login
-        router.push("/auth/login");
+        setTimeout(() => router.push("/auth/login"), 3000);
+      } else {
+        toast.error("Error", { description: `${data.message}` });
       }
     },
-    onError: (data) => {
-      toast({
-        title: "Something went wrong",
-        description: `${data.message}`,
-        variant: "destructive",
-      });
+    onError: (error) => {
+      const errorMessage = error.message.includes(
+        "PrismaClientInitializationError"
+      )
+        ? "Internal Server Error"
+        : error?.message;
+
+      toast.error("Something went wrong", { description: errorMessage });
     },
   });
 
@@ -42,49 +43,44 @@ export function RegisterService() {
 
 export function LoginService() {
   const router = useRouter();
-  const { toast } = useToast();
 
   //login mutation handler
-  return useMutation({
-    mutationFn: loginUserFn,
+  const { mutateAsync: loginUser, isPending } = useMutation({
+    mutationFn: async (data: LoginAuthFormValues) => await loginUserFn(data),
     onSuccess: (data) => {
-      console.log(data);
       if (data?.user) {
-        toast({
-          title: "Success",
+        toast.success("Success", {
           description: "Login Successful! Redirecting...",
-          variant: "default",
         });
 
         router.push("/");
-      } else {
-        throw Error;
-      }
+      } else throw Error;
     },
     onError: (error) => {
-      toast({
-        title: "Something went wrong",
-        description: `${
-          error.message.includes("Prisma")
-            ? "Internal Server Error"
-            : error.message
-        }`,
-        variant: "destructive",
-      });
+      const errorMessage = error.message.includes(
+        "PrismaClientInitializationError"
+      )
+        ? "Internal Server Error"
+        : error?.message;
+
+      toast.error("Something went wrong", { description: errorMessage });
     },
   });
+
+  return {
+    loginUser,
+    isPending,
+  };
 }
 
 export function LogoutService() {
   const router = useRouter();
-  const { toast } = useToast();
 
   const handleLogout = async () => {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          toast({
-            title: "Success",
+          toast.success("Success", {
             description: "Logged out Successful! Redirecting...",
           });
 

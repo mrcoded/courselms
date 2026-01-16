@@ -3,14 +3,14 @@
 import React, { useState } from "react";
 import Link from "next/link";
 
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { RegisterService } from "@/services/auth.service";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import AuthButton from "@/components/ui/Button/AuthButton";
 import PasswordVisibility from "@/components/password-visibility";
 
 import { RegisterAuthFormValues } from "@/types/auth";
@@ -20,7 +20,7 @@ import { UserTypeSelector } from "@/app/auth/_components/select-user-type";
 
 export const RegisterForm = () => {
   const [role, setRole] = useState("");
-  console.log(role);
+
   const [isRoleSelect, setIsRoleSelect] = useState(false);
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -30,6 +30,7 @@ export const RegisterForm = () => {
 
   //Form validation
   const {
+    control,
     register,
     handleSubmit,
     formState: {
@@ -59,10 +60,19 @@ export const RegisterForm = () => {
     >
       <p className="text-sm mb-2">Sign up with your information below.</p>
       {!isRoleSelect ? (
-        <UserTypeSelector
-          role={role}
-          setRole={setRole}
-          setIsRoleSelect={setIsRoleSelect}
+        <Controller
+          name="role"
+          control={control}
+          render={({ field }) => (
+            <UserTypeSelector
+              setRole={(val) => {
+                field.onChange(val);
+                setIsRoleSelect(true);
+              }}
+              role={field.value}
+              setIsRoleSelect={setIsRoleSelect}
+            />
+          )}
         />
       ) : (
         <fieldset
@@ -77,6 +87,7 @@ export const RegisterForm = () => {
               <p className="text-xs text-red-500">{password.message}</p>
             )}
           </>
+
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="email">Full name</Label>
             <Input
@@ -111,9 +122,11 @@ export const RegisterForm = () => {
             />
           </div>
 
-          <Button type="submit" isLoading={isPending}>
-            {isPending ? "Signing up..." : "Sign Up"}
-          </Button>
+          <AuthButton
+            isPending={isPending}
+            btnPending="Signing up..."
+            btnLabel="Sign Up"
+          />
 
           <p className="text-xs">
             Already have an account?{" "}
