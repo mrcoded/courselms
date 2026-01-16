@@ -3,6 +3,7 @@
 import qs from "query-string";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
 import { CategoryItemProps } from "@/types/dashboard.types";
 
 const CategoryItem = ({ label, value, icon: Icon }: CategoryItemProps) => {

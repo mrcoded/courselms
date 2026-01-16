@@ -6,7 +6,7 @@ import { getServerSession } from "@/lib/get-server-session";
 import { getDashboardCourses } from "@/lib/actions/get-dashboard-courses";
 
 import CoursesList from "@/components/courses-list";
-import InfoCard from "../(root)/_components/dashboard-info-card";
+import InfoCard from "./_components/dashboard-info-card";
 
 const Dashboard = async () => {
   const session = await getServerSession();

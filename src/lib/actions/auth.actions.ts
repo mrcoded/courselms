@@ -3,14 +3,18 @@
 import { db } from "@/config/db";
 import { auth } from "@/config/auth";
 
-import { LoginAuthFormValues, RegisterAuthFormValues } from "@/types/auth";
+import {
+  ActionResponse,
+  LoginAuthFormValues,
+  RegisterAuthFormValues,
+} from "@/types/auth";
 
 export async function registerUserFn(
   formData: RegisterAuthFormValues
-): Promise<{ message: string; success: boolean }> {
+): Promise<ActionResponse> {
   //destructure data
   const { email, password, name, role } = formData;
-  console.log(role);
+
   try {
     //check if user already exists in the db
     const existingUser = await db.user.findUnique({

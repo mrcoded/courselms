@@ -1,7 +1,7 @@
 import {
-  LoginAuthSchema,
   RegisterAuthSchema,
-} from "@/src/validators/auth-validator";
+  LoginAuthSchema,
+} from "@/validators/auth-validator";
 
 // Define props with generic typing for reusability with React Hook Form
 export interface InputFieldProps<T extends FieldValues> {

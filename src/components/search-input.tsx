@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import qs from "query-string";
 
-import { Input } from "./ui/input";
+import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/use-debounce";
 
 const SearchInput = () => {
@@ -35,7 +35,7 @@ const SearchInput = () => {
 
   return (
     <div>
-      <Search className="h-4 w-4 absolute top-3 left-3 text-slate-600" />
+      <Search className="h-4 w-4 relative top-6 left-3 text-slate-600" />
       <Input
         value={value}
         onChange={(e) => setValue(e.target.value)}

@@ -7,7 +7,6 @@ import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SearchInput from "@/components/search-input";
 
-import { isTutor } from "@/lib/get-tutor";
 import { useSession } from "@/config/auth-client";
 
 const NavbarRoutes = () => {
@@ -22,6 +21,9 @@ const NavbarRoutes = () => {
 
   //get user ID
   const userId = session?.user?.id;
+
+  // Get if user is a tutor
+  const isTutor = session?.user?.role;
 
   const isTutorPage = pathname?.startsWith("/tutor");
   const isCoursePage = pathname?.startsWith("/courses");
@@ -50,7 +52,7 @@ const NavbarRoutes = () => {
             <LogOut className="size-2 sm:size-4 sm:mr-2" />
             Back
           </Button>
-        ) : isTutor(userId) ? (
+        ) : isTutor ? (
           <Button
             onClick={() => router.push("/tutor/courses")}
             size="sm"
