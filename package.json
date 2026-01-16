@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "node src/scripts/seed.ts",
-    "postinstall": "prisma generate"
+    "seed": "node src/scripts/seed.ts"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
