@@ -19,40 +19,62 @@ export type AttachmentInputValues = z.infer<typeof attachmentInputSchema>;
 export type VideoInputValues = z.infer<typeof videoInputSchema>;
 
 export interface TitleFormProps {
+  initialData: {
+    title: string;
+  };
+  courseId: string;
+  chapterId: string;
+}
+
+export interface TitleInputFormProps {
   initialData?: {
     title: string;
   };
-  courseId?: string;
-  chapterId?: string;
-  onSubmit?: (data: TitleInputValues) => void;
   isEditing?: boolean;
+  onSubmit: (data: TitleInputValues) => void;
 }
 
 export interface CategoryFormProps {
   initialData: Course;
   courseId: string;
-  onSubmit?: (data: CategoryInputValues) => void;
+  options: { label: string; value: string }[];
+}
+
+export interface CategoryInputFormProps {
+  initialData: Course;
+  onSubmit: (data: CategoryInputValues) => void;
   options: { label: string; value: string }[];
 }
 
 export interface ChaptersFormProps {
-  initialData?: Course & { chapters?: Chapter[] | null };
+  initialData: Course & { chapters?: Chapter[] | null };
   courseId: string;
-  onSubmit?: (data: TitleInputValues) => void;
+}
+
+export interface ChaptersInputFormProps {
+  onSubmit: (data: TitleInputValues) => void;
 }
 
 export interface DescriptionFormProps {
-  courseId?: string;
-  chapterId?: string;
+  courseId: string;
+  chapterId: string;
   initialData: Course | Chapter;
-  isEditing?: boolean;
-  onSubmit?: (data: DescriptionInputValues) => Promise<void> | undefined;
+}
+
+export interface DescriptionInputFormProps {
+  initialData: Course | Chapter;
+  isEditing: boolean;
+  onSubmit: (data: DescriptionInputValues) => Promise<void>;
 }
 
 export interface PriceFormProps {
-  courseId?: string;
+  courseId: string;
   initialData: Course;
-  onSubmit?: (data: PriceInputValues) => void;
+}
+
+export interface PriceInputFormProps {
+  initialData: Course;
+  onSubmit: (data: PriceInputValues) => void;
 }
 
 export interface ChaptersListProps {
@@ -74,9 +96,13 @@ export interface CourseActionsProps {
 
 export interface ChapterAccessFormProps {
   initialData: Chapter;
-  courseId?: string;
-  chapterId?: string;
-  onSubmit?: (data: AccessSelectValues) => void;
+  courseId: string;
+  chapterId: string;
+}
+
+export interface ChapterInputAccessFormProps {
+  initialData: Chapter;
+  onSubmit: (data: AccessSelectValues) => void;
 }
 
 export interface ChapterActionsProps {
