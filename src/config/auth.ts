@@ -1,3 +1,4 @@
+import z from "zod";
 import { PrismaClient } from "@prisma/client";
 
 import { betterAuth } from "better-auth";
@@ -16,10 +17,12 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       role: {
-        type: ["student", "tutor"],
+        type: "string",
         required: true,
-        defaultValue: "student",
         input: true,
+        validator: {
+          input: z.enum(["student", "tutor"]),
+        },
       },
     },
   },
