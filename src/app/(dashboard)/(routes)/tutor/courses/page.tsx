@@ -12,7 +12,7 @@ const CoursesPage = async () => {
   const user = session?.user;
   const userId = user?.id;
 
-  //If user is nt found
+  //If user is not found
   if (!userId) {
     return redirect("/");
   }

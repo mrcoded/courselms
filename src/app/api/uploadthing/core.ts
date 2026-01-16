@@ -1,4 +1,3 @@
-import { isTeacher } from "@/lib/get-tutor";
 import { getServerSession } from "@/lib/get-server-session";
 
 import { createUploadthing, type FileRouter } from "uploadthing/next";
@@ -11,7 +10,7 @@ const handleAuth = async () => {
   const userId = user?.id;
 
   //check if user is an authorized tutor
-  const isAuthorized = isTeacher(userId);
+  const isAuthorized = session?.user.role === "tutor";
 
   if (!userId || !isAuthorized) throw new Error("Unauthorized");
   return { userId };
