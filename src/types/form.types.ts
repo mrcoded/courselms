@@ -23,7 +23,7 @@ export interface TitleFormProps {
     title: string;
   };
   courseId: string;
-  chapterId: string;
+  chapterId?: string;
 }
 
 export interface TitleInputFormProps {
@@ -57,7 +57,7 @@ export interface ChaptersInputFormProps {
 
 export interface DescriptionFormProps {
   courseId: string;
-  chapterId: string;
+  chapterId?: string;
   initialData: Course | Chapter;
 }
 
