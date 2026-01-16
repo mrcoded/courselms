@@ -96,7 +96,7 @@ const ChapterIdPage = async ({
               <Separator />
               <div className="p-4">
                 {data.attachments.map((attachment) => (
-                  <AttachmentLink key={attachment.id} attachment={attachment} />
+                  <AttachmentLink attachment={attachment} />
                 ))}
               </div>
             </>
