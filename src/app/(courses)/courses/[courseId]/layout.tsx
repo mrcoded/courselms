@@ -22,6 +22,11 @@ const CourseLayout = async ({
   // Redirect if not logged in
   if (!userId) redirect("/");
 
+  //check if user is a tutor and if they are redirect to their dashboard
+  if (session?.user.role === "tutor") {
+    return redirect("/tutor/courses");
+  }
+
   // Get courseId from params
   const { courseId } = await params;
 
@@ -38,7 +43,7 @@ const CourseLayout = async ({
 
   return (
     <div className="h-full">
-      <div className="h-[80px] md:pl-56 lg:pl-80 fixed inset-y-0 w-auto z-50">
+      <div className="h-[80px] md:pl-56 lg:pl-80 fixed inset-y-0 w-full z-50">
         <CourseNavbar course={course} progressCount={progressCount} />
       </div>
       <div className="hidden md:flex h-full w-56 lg:w-80 flex-col fixed inset-y-0 z-50">

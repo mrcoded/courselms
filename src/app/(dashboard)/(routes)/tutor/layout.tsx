@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 
-import { isTutor } from "@/lib/get-tutor";
 import { getServerSession } from "@/lib/get-server-session";
 
 export default async function TutorLayout({
@@ -13,15 +12,12 @@ export default async function TutorLayout({
   const userId = user?.id;
 
   // Redirect if not logged in
-  if (!session) redirect("/auth/login");
+  if (!userId) redirect("/auth/login");
 
   // If a tutor tries to enter the student dashboard
-  if (session.user.role === "student") {
-    redirect("/");
+  if (session?.user.role === "student") {
+    return redirect("/dashboard");
   }
-
-  // Redirect if not logged in
-  if (!isTutor(userId)) return redirect("/");
 
   return <>{children}</>;
 }
