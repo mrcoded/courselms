@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed": "node src/scripts/seed.ts",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
@@ -21,6 +23,7 @@
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-popover": "^1.1.15",
     "@radix-ui/react-progress": "^1.1.8",
+    "@radix-ui/react-radio-group": "^1.3.8",
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-toast": "^1.2.15",
@@ -44,6 +47,7 @@
     "react-hook-form": "^7.70.0",
     "react-icons": "^5.3.0",
     "react-quill-new": "^3.7.0",
+    "recharts": "^3.6.0",
     "sonner": "^2.0.7",
     "stripe": "^19.1.0",
     "tailwind-merge": "^2.5.2",
@@ -52,15 +56,14 @@
     "zustand": "^4.5.5"
   },
   "devDependencies": {
-    "@types/next": "^8.0.7",
-    "@types/node": "^24.10.4",
+    "@types/node": "^22.0.0",
     "@types/react": "^19.2.3",
     "@types/react-dom": "^19.2.3",
-    "@types/stripe": "^8.0.417",
     "eslint": "^9.36.0",
     "eslint-config-next": "15.5.4",
     "postcss": "^8",
-    "prisma": "6.19",
+    "prisma": "^6.19.1",
+    "server-only": "^0.0.1",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
