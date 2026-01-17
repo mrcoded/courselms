@@ -22,7 +22,7 @@ const ChapterIdPage = async ({
   const userId = user?.id;
 
   //redirect if not logged in
-  if (!userId) redirect("/");
+  if (!userId) redirect("/auth/login");
 
   //get course id and chapter id from params
   const { courseId, chapterId } = await params;

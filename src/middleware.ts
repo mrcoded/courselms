@@ -9,7 +9,6 @@ export async function middleware(request: NextRequest) {
     request.cookies.get("__Secure-better-auth.session_token");
 
   const hasCookie = !!sessionCookie;
-  console.log("Middleware - Has Cookie:", hasCookie, sessionCookie?.value);
 
   const protectedRoutes = ["/dashboard", "/tutor", "/courses", "/search"];
   const authRoutes = ["/auth/login", "/auth/register"];

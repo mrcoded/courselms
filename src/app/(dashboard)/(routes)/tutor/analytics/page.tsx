@@ -12,7 +12,7 @@ const AnalyticsPage = async () => {
   const userId = session?.user?.id;
 
   // Redirect if not logged in
-  if (!userId) redirect("/");
+  if (!userId) redirect("/auth/login");
 
   // Get analytics
   const { data, totalRevenue, totalSales } = await getAnalytics(userId);

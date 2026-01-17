@@ -20,7 +20,7 @@ const ChapterVideoForm = ({
 }: ChapterVideoFormProps) => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
-  console.log(initialData?.muxData?.playbackId);
+
   // Toggle edit mode
   const toggleEdit = () => setIsEditing((prev) => !prev);
 

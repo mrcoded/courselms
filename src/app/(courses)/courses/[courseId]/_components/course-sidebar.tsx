@@ -15,7 +15,7 @@ const CourseSidebar = async ({ course, progressCount }: CourseSidebarProps) => {
   const userId = user?.id;
 
   // Redirect if not logged in
-  if (!userId) redirect("/");
+  if (!userId) redirect("/auth/login");
 
   // Get purchase
   const purchase = await getPurchase({ userId, course });

@@ -20,7 +20,7 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
   const resolvedSearchParams = await searchParams;
 
   // Redirect if not logged in
-  if (!userId) redirect("/");
+  if (!userId) redirect("/auth/login");
 
   // Get categories
   const categories = await db.category.findMany({

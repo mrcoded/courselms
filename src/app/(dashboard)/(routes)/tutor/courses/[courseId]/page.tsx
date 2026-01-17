@@ -22,7 +22,7 @@ const CourseIdPage = async ({
 
   // Redirect if not logged in
   if (!userId) {
-    return redirect("/");
+    return redirect("/auth/login");
   }
 
   // Get course

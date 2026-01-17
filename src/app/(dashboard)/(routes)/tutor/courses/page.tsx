@@ -14,7 +14,7 @@ const CoursesPage = async () => {
 
   //If user is nt found
   if (!userId) {
-    return redirect("/");
+    return redirect("/auth/login");
   }
 
   //get courses

@@ -9,13 +9,13 @@ const HomePage = async () => {
   const role = session?.user?.role;
 
   // Redirect if not logged in
-  if (!userId) return redirect("/");
+  if (!userId) redirect("/auth/login");
 
   // If user role is a tutor redirect
-  if (role === "tutor") return redirect("/tutor/courses");
+  if (role === "tutor") redirect("/tutor/courses");
 
   // If user role is student redirect
-  if (role === "student") return redirect("/dashboard");
+  if (role === "student") redirect("/dashboard");
 };
 
 export default HomePage;

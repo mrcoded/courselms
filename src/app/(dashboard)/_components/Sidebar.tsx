@@ -15,7 +15,7 @@ const Sidebar = () => {
 
   return (
     <div className="h-full border-r flex flex-col overflow-y-auto bg-white shadow-sm">
-      <div className="p-6">
+      <div className="flex items-center justify-center p-6">
         <Logo />
       </div>
       <div className="flex flex-1 flex-col w-full">
@@ -25,7 +25,7 @@ const Sidebar = () => {
         size="sm"
         variant="ghost"
         onClick={handleLogout}
-        className="flex justify-start items-center text-slate-500 text-sm font-[500] pl-6 transition-all hover:text-slate-600 hover:bg-slate-300/20"
+        className="flex justify-start items-center pl-6 mb-2 text-slate-500 text-sm font-[500] transition-all hover:text-slate-600 hover:bg-slate-300/20"
       >
         <LogOut className="size-3 sm:size-4 mr-2" /> Logout
       </Button>

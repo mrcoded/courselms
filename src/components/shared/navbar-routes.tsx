@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 
@@ -14,23 +14,12 @@ const NavbarRoutes = () => {
   const pathname = usePathname();
   const { data: session } = useSession();
 
-  const [isMounted, setIsMounted] = useState(false);
-
-  //check if component is mounted
-  useEffect(() => setIsMounted(true), []);
-
-  //get user ID
-  const userId = session?.user?.id;
-
   // Get if user is a tutor
-  const isTutor = session?.user?.role;
+  const isTutor = session?.user?.role === "tutor";
 
   const isTutorPage = pathname?.startsWith("/tutor");
   const isCoursePage = pathname?.startsWith("/courses");
   const isSearchPage = pathname === "/search";
-
-  //nothing is displayed on server side like hydration errors
-  if (!isMounted) return null;
 
   return (
     <>
@@ -46,7 +35,7 @@ const NavbarRoutes = () => {
           <Button
             size="sm"
             variant="ghost"
-            onClick={() => router.back()}
+            onClick={() => router.push(`/`)}
             className="text-xs sm:text-sm"
           >
             <LogOut className="size-2 sm:size-4 sm:mr-2" />

@@ -29,7 +29,7 @@ export function RegisterService() {
     },
     onError: (error) => {
       const errorMessage = error.message.includes(
-        "PrismaClientInitializationError"
+        "[PrismaClientInitializationError]:"
       )
         ? "Internal Server Error"
         : error?.message;
@@ -58,7 +58,7 @@ export function LoginService() {
     },
     onError: (error) => {
       const errorMessage = error.message.includes(
-        "PrismaClientInitializationError"
+        "[PrismaClientInitializationError]:"
       )
         ? "Internal Server Error"
         : error?.message;

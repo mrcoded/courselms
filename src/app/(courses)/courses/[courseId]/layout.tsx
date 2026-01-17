@@ -20,7 +20,7 @@ const CourseLayout = async ({
   const userId = user?.id;
 
   // Redirect if not logged in
-  if (!userId) redirect("/");
+  if (!userId) redirect("/auth/login");
 
   //check if user is a tutor and if they are redirect to their dashboard
   if (session?.user.role === "tutor") {

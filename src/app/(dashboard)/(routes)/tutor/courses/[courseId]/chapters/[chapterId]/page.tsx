@@ -2,7 +2,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
-import { getServerSession } from "@/lib/get-server-session";
 import { getCompletionStats } from "@/utils/get-completion-stats";
 import { getOneChapter } from "@/lib/actions/get-one-chapter.actions";
 
@@ -15,9 +14,6 @@ const ChapterIdPage = async ({
 }: {
   params: Promise<{ courseId: string; chapterId: string }>;
 }) => {
-  const session = await getServerSession();
-  if (!session?.user?.id) return redirect("/");
-
   //get chapterId and courseId from params
   const { chapterId, courseId } = await params;
 
@@ -28,7 +24,7 @@ const ChapterIdPage = async ({
   });
 
   //if chapter is not found
-  if (!chapter) redirect("/");
+  if (!chapter) redirect("/tutor/courses");
 
   // Get completion stats
   const { completionText, isCompleted } = getCompletionStats([

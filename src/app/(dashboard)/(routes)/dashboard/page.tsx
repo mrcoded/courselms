@@ -13,7 +13,7 @@ const Dashboard = async () => {
   const userId = session?.user?.id;
 
   // Redirect if not logged in
-  if (!userId) return redirect("/");
+  if (!userId) return redirect("/auth/login");
 
   // Get dashboard datas
   const { completedCourses, coursesInProgress } = await getDashboardCourses(
