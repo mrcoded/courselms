@@ -3,12 +3,13 @@ import Image from "next/image";
 const Logo = () => {
   return (
     <Image
-      height={130}
+      height={48}
       width={130}
       alt="logo"
-      src="/logo.svg"
+      src="/logolms.png"
       loading="lazy"
       decoding="async"
+      className="h-12"
     />
   );
 };
