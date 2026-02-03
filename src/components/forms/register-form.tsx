@@ -56,7 +56,7 @@ export const RegisterForm = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-sm mx-auto space-y-4"
+      className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md mx-auto space-y-4"
     >
       <p className="text-sm mb-2">Sign up with your information below.</p>
       {!isRoleSelect ? (
@@ -65,10 +65,7 @@ export const RegisterForm = () => {
           control={control}
           render={({ field }) => (
             <UserTypeSelector
-              setRole={(val) => {
-                field.onChange(val);
-                setIsRoleSelect(true);
-              }}
+              setRole={field.onChange}
               role={field.value}
               setIsRoleSelect={setIsRoleSelect}
             />

@@ -40,7 +40,7 @@ export const UserTypeSelector = ({
       <CardContent>
         <RadioGroup
           value={role}
-          onValueChange={(value) => setRole(value)}
+          onValueChange={setRole}
           className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
           {/* Student Option */}
@@ -78,6 +78,7 @@ export const UserTypeSelector = ({
         </p>
 
         <Button
+          disabled={!role}
           variant="ghost"
           onClick={handleClick}
           className="flex underline place-self-center font-semibold"
