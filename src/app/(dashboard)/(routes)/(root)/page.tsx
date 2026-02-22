@@ -7,7 +7,6 @@ const HomePage = async () => {
   const userId = session?.user?.id;
 
   const role = session?.user?.role;
-
   // Redirect if not logged in
   if (!userId) redirect("/auth/login");
 

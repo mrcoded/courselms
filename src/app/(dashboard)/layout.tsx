@@ -22,16 +22,13 @@ export default async function DashboardLayout({
 }) {
   const session = await getServerSession();
 
-  const role = session?.user?.role;
-  const sessionId = session?.session?.id;
-
   // Redirect if not logged in
   if (!session) redirect("/auth/login");
 
   return (
     <div className="h-full">
       <div className="h-[80px] lg:pl-56 fixed inset-y-0 w-full z-50">
-        <Navbar sessionId={sessionId} role={role} />
+        <Navbar />
       </div>
       <div className="hidden lg:flex h-full w-56 flex-col fixed inset-y-0 z-50">
         <Sidebar />

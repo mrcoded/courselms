@@ -53,8 +53,8 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
       {!isEditing && (
         <p
           className={cn(
-            "text-sm mt-2",
-            !initialData.description && "text-slate-500 italic"
+            "text-sm mt-2 text-wrap break-words",
+            !initialData.description && "text-slate-500 italic",
           )}
         >
           {initialData.description || "No description"}

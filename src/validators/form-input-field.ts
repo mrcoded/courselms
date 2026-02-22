@@ -21,12 +21,9 @@ export const descriptionInputSchema = z.object({
 });
 
 export const priceInputSchema = z.object({
-  price: z
-    .number()
-    .min(1, {
-      message: "price is required",
-    })
-    .nullish(),
+  price: z.number().min(1, {
+    message: "price is required",
+  }),
 });
 
 export const videoInputSchema = z.object({

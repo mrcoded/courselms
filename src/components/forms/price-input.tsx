@@ -21,7 +21,7 @@ const PriceInputForm = ({ initialData, onSubmit }: PriceInputFormProps) => {
   const formMethods = useForm<PriceInputValues>({
     resolver: zodResolver(priceInputSchema),
     defaultValues: {
-      price: initialData.price,
+      price: initialData.price ?? 0,
     },
   });
 
@@ -47,6 +47,7 @@ const PriceInputForm = ({ initialData, onSubmit }: PriceInputFormProps) => {
                   placeholder="Set the course price"
                   {...field}
                   value={field.value ?? ""}
+                  onChange={(e) => field.onChange(e.target.valueAsNumber ?? 0)}
                 />
               </FormControl>
               <FormMessage />

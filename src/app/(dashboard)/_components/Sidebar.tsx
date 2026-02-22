@@ -25,7 +25,7 @@ const Sidebar = () => {
         size="sm"
         variant="ghost"
         onClick={handleLogout}
-        className="flex justify-start items-center pl-6 mb-2 text-slate-500 text-sm font-[500] transition-all hover:text-slate-600 hover:bg-slate-300/20"
+        className="flex justify-start items-center pl-6 mb-2 text-slate-700 text-sm font-[500] transition-all hover:text-slate-600 hover:bg-slate-300/20"
       >
         <LogOut className="size-3 sm:size-4 mr-2" /> Logout
       </Button>
