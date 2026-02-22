@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { Prisma } from "@prisma/client";
 
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
@@ -28,11 +29,11 @@ export function RegisterService() {
       }
     },
     onError: (error) => {
-      const errorMessage = error.message.includes(
-        "[PrismaClientInitializationError]:"
-      )
-        ? "Internal Server Error"
-        : error?.message;
+      const errorMessage =
+        error instanceof Prisma.PrismaClientInitializationError ||
+        error instanceof Prisma.PrismaClientKnownRequestError
+          ? "Internal Server Error"
+          : error?.message;
 
       toast.error("Something went wrong", { description: errorMessage });
     },
@@ -57,11 +58,11 @@ export function LoginService() {
       } else throw Error;
     },
     onError: (error) => {
-      const errorMessage = error.message.includes(
-        "[PrismaClientInitializationError]:"
-      )
-        ? "Internal Server Error"
-        : error?.message;
+      const errorMessage =
+        error instanceof Prisma.PrismaClientInitializationError ||
+        error instanceof Prisma.PrismaClientKnownRequestError
+          ? "Internal Server Error"
+          : error?.message;
 
       toast.error("Something went wrong", { description: errorMessage });
     },

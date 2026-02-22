@@ -1,19 +1,20 @@
 import { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "../globals.css";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Auth - Course LMS",
   description: "Create an account to access courses and start learning.",
 };
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <main className="flex flex-1 items-center justify-center w-full h-full">
-      {children}
-    </main>
+    <div className="flex items-center justify-center h-full">{children}</div>
   );
 }
