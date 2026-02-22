@@ -17,7 +17,7 @@ const PasswordVisibility = ({
 
   return (
     <span
-      className="absolute right-0 top-1/2 transform -translate-y-3/4 m-2 cursor-pointer"
+      className="absolute right-0 top-1/2 transform -translate-y-2/4 m-2 cursor-pointer"
       onClick={togglePasswordVisibility}
     >
       {showPassword ? (
